@@ -77,7 +77,7 @@ function predict(model::AbstractQuantumModel)
     # generate all combinations of projectors for 2-way tables 
     combs = combinations(projectors, 2)
     # generate all 2-way joint probability tables 
-    return map(p -> get_joint_probs(model, p..., Ψ), combs)
+    return map(p -> get_joint_probs(model, p, Ψ), combs)
 end
 
 """
@@ -99,7 +99,13 @@ function make_projectors(model::QuantumModel)
     Pp = (Upb * My * Upb') ⊗ I(2)
     # projector for responding "yes" to likable    
     Pl = I(2) ⊗ (Uli * My * Uli')
-    return [Pb,Pi,Pp,Pl]
+    projectors = [
+        [Pb,I(4)-Pb],
+        [Pi,I(4)-Pi],
+        [Pp,I(4)-Pp],
+        [Pl,I(4)-Pl],
+    ]
+    return projectors
 end
 
 """
@@ -124,12 +130,11 @@ Computes the joint probability of two events.
 # Arguments
 
 - `model::AbstractQuantumModel`:an abstract quantum model object
-- `P1`: projector for the first event 
-- `P2`: projector for the second event 
+- `projectors`: a vector of projectors 
 - `Ψ`: superposition state vector 
 """
-function get_joint_prob(model::AbstractQuantumModel, P1, P2, Ψ)
-    proj = P2 * P1 * Ψ
+function get_joint_prob(model::AbstractQuantumModel, projectors, Ψ)
+    proj = prod(projectors) * Ψ
     return proj' * proj 
 end
 
@@ -150,13 +155,8 @@ Computes the joint four probabilities of two binary (yes, no) events. The four j
 - `P2`: projector for the second event 
 - `Ψ`: superposition state vector 
 """
-function get_joint_probs(model::AbstractQuantumModel, P1, P2, Ψ)
-    n = length(Ψ)
-    p_yy = get_joint_prob(model, P1, P2, Ψ)
-    p_yn = get_joint_prob(model, P1, I(n) - P2, Ψ)
-    p_ny = get_joint_prob(model, I(n) - P1, P2, Ψ)
-    p_nn = 1 - (p_yy + p_yn + p_ny)
-    return [p_yy,p_yn,p_ny,p_nn]
+function get_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
+    return  map(p -> get_joint_prob(model, p, Ψ), Base.product(projectors...))
 end
 
 const ⊗(x, y) = kron(x, y)
