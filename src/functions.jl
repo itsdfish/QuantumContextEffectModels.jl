@@ -156,7 +156,15 @@ Computes the joint four probabilities of two binary (yes, no) events. The four j
 - `Ψ`: superposition state vector 
 """
 function get_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
-    return  map(p -> get_joint_prob(model, p, Ψ), Base.product(projectors...))
+    combs = Base.product(projectors...)
+    n = length(combs)
+    joint_probs = fill(0.0, n)
+    i = 1
+    for c ∈ combs  
+        joint_probs[i] = get_joint_prob(model, c, Ψ)
+        i += 1
+    end
+    return joint_probs
 end
 
 const ⊗(x, y) = kron(x, y)

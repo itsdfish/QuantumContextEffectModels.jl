@@ -27,9 +27,8 @@ preds1 = [
 
 projectors = make_projectors(model)
 
-# x = [[:a1,:a2,:a3],[:b1,:b2,:b3],[:c1,:c2,:c3],[:d1,:d2,:d3]]
-x = [[:v1y,:v2n],[:v2y,:v2n]]
-combs = combinations(projectors, 2) |> collect 
+x = [[:a1,:a2,:a3],[:b1,:b2],[:c1,:c2],[:d1,:d2]]
+combs = combinations(x, 2) |> collect 
 
 variables = [
     :believable,
