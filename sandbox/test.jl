@@ -4,6 +4,8 @@
 cd(@__DIR__)
 using Pkg 
 Pkg.activate("..")
+using Revise
+using QuantumContextEffectModels
 using DataFrames
 using Distributions 
 using LinearAlgebra

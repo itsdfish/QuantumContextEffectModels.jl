@@ -1,6 +1,5 @@
-using QuantumContextEffectModels
-using Test
+using SafeTestsets
 
-@testset "QuantumContextEffectModels.jl" begin
-    # Write your tests here.
-end
+files = readdir()
+filter!(f -> f ≠ "runtests.jl", files)
+include.(files)
