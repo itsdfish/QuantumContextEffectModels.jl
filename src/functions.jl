@@ -52,21 +52,41 @@ table for binary (yes,no) responses. Each sub-vector corresponds to the followin
 - `no, yes`
 - `no, no`
 
-The two-way tables are as follows: 
-
-- `persuasive and informative`
-- `persuasive and believable`
-- `persuasive and likable`
-- `informative and believable`
-- `informative and likable`
-- `believable and likable`
+Assuming 4 binary variables, the tables will correspond to the following two-way tables:
+```julia 
+variables = [
+    :believable,
+    :informative,
+    :persuasive,
+    :likeable
+]
+combs = combinations(variables, 2) |> collect
+# output
+[:believable, :informative]
+[:believable, :persuasive]
+[:believable, :likeable]
+[:informative, :persuasive]
+[:informative, :likeable]
+[:persuasive, :likeable]
+```
 """
 function predict(model::AbstractQuantumModel)
     (;Ψ, θli, θpb) = model
+    # generate all projectors 
+    projectors = make_projectors(model)
+    # generate all combinations of projectors for 2-way tables 
+    combs = combinations(projectors, 2)
+    # generate all 2-way joint probability tables 
+    return map(p -> get_joint_probs(model, p..., Ψ), combs)
+end
+
+"""
+"""
+function make_projectors(model::QuantumModel)
+    (;θli, θpb) = model
 
     # 2D projector for responding "yes"
     My = [1 0; 0 0]
-
     # unitary transformation matrices
     Upb = U(θpb)
     Uli = U(θli)
@@ -79,21 +99,7 @@ function predict(model::AbstractQuantumModel)
     Pp = (Upb * My * Upb') ⊗ I(2)
     # projector for responding "yes" to likable    
     Pl = I(2) ⊗ (Uli * My * Uli')
-
-    # joint probabilities for persuasive and informative
-    prob_pi = get_joint_probs(model, Pp, Pi, Ψ)
-    # joint probabilities for persuasive and believable
-    prob_pb = get_joint_probs(model, Pp, Pb, Ψ)
-    # joint probabilities for persuasive and likable
-    prob_pl = get_joint_probs(model, Pp, Pl, Ψ)
-    # joint probabilities for informative and believable
-    prob_ib = get_joint_probs(model, Pi, Pb, Ψ)
-    # joint probabilities for informative and likable
-    prob_il = get_joint_probs(model, Pi, Pl, Ψ)
-    # joint probabilities for believable and likable
-    prob_bl = get_joint_probs(model, Pb, Pl, Ψ)
-
-    return [prob_pi,prob_pb,prob_pl,prob_ib,prob_il,prob_bl]    
+    return [Pb,Pi,Pp,Pl]
 end
 
 """
@@ -154,11 +160,6 @@ function get_joint_probs(model::AbstractQuantumModel, P1, P2, Ψ)
 end
 
 const ⊗(x, y) = kron(x, y)
-
-# function rand(dist::AbstractQuantumModel, n_trials::Int)
-#     preds = predict(dist)
-#     return rand.(Multinomial.(n_trials, preds))
-# end
 
 function rand(dist::AbstractQuantumModel, n_trials::Int)
     preds = predict(dist)

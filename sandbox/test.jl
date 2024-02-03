@@ -12,10 +12,10 @@ using LinearAlgebra
 using Plots 
 include("functions.jl")
 
-columns = [:A,:B,:C]
+columns = [:A,:B,:C,:D]
 n = 100 
 
-Θ = rand(8)
+Θ = rand(16)
 Θ ./= sum(Θ)
 
 contexts = [[:A,:B],[:A,:C],[:B,:C]]

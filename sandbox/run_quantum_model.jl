@@ -14,3 +14,13 @@ model = QuantumModel(; parms...)
 preds = predict(model)
 
 sum.(preds)
+
+projectors = make_projectors(model)
+
+variables = [
+    :believable,
+    :informative,
+    :persuasive,
+    :likeable
+]
+combs = combinations(variables, 2) |> collect

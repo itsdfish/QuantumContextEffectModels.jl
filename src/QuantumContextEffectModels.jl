@@ -1,5 +1,6 @@
 module QuantumContextEffectModels
 
+    using Combinatorics: combinations
     using Distributions: Multinomial
     using LinearAlgebra
 
@@ -8,6 +9,7 @@ module QuantumContextEffectModels
 
     export AbstractQuantumModel
     export QuantumModel
+    export make_projectors
     export predict  
 
     include("structs.jl")
