@@ -70,17 +70,33 @@ combs = combinations(variables, 2) |> collect
 [:persuasive, :likeable]
 ```
 """
-function predict(model::AbstractQuantumModel)
+function predict(model::AbstractQuantumModel; n_way, joint_fun=get_ordered_joint_probs)
     (;Ψ, θli, θpb) = model
     # generate all projectors 
     projectors = make_projectors(model)
     # generate all combinations of projectors for 2-way tables 
-    combs = combinations(projectors, 2)
+    combs = combinations(projectors, n_way)
     # generate all 2-way joint probability tables 
-    return map(p -> get_joint_probs(model, p, Ψ), combs)
+    return map(p -> joint_fun(model, p, Ψ), combs)
 end
 
 """
+    make_projectors(model::QuantumModel)
+
+Returns projectors for each value of each variable. 
+
+# Arguments
+
+- `model::AbstractQuantumModel`:an abstract quantum model object
+
+# Returns 
+
+- `projectors::Vector{Vector{Float64}}`: a nested vector of projectors 
+
+For this model, there are four variables (believable,infromative,persuasive,likable) with binary values (yes, no).
+The projectors organized as follows `[[Pby Pbn],[Piy Pin],[Ppy Ppn],[Ply Pln]]`, where the first index corresponds
+to the variable and the second index correspons to the binary value. For example, `Pbn`,
+is the projector for responding "no" to the question about believable. 
 """
 function make_projectors(model::QuantumModel)
     (;θli, θpb) = model
@@ -123,22 +139,6 @@ U(θ) = [
 ]
 
 """
-    get_joint_prob(model::AbstractQuantumModel, P1, P2, Ψ)
-
-Computes the joint probability of two events. 
-
-# Arguments
-
-- `model::AbstractQuantumModel`:an abstract quantum model object
-- `projectors`: a vector of projectors 
-- `Ψ`: superposition state vector 
-"""
-function get_joint_prob(model::AbstractQuantumModel, projectors, Ψ)
-    proj = prod(projectors) * Ψ
-    return proj' * proj 
-end
-
-"""
     get_joint_probs(model::AbstractQuantumModel, P1, P2, Ψ)
 
 Computes the joint four probabilities of two binary (yes, no) events. The four joint probabilities are as follows:
@@ -167,10 +167,73 @@ function get_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
     return joint_probs
 end
 
+"""
+    get_joint_probs(model::AbstractQuantumModel, P1, P2, Ψ)
+
+Computes the joint four probabilities of two binary (yes, no) events. The four joint probabilities are as follows:
+
+- `yes yes`
+- `yes no`
+- `no yes`
+- `no no`
+
+# Arguments
+
+- `model::AbstractQuantumModel`:an abstract quantum model object
+- `P1`: projector for the first event 
+- `P2`: projector for the second event 
+- `Ψ`: superposition state vector 
+"""
+function get_ordered_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
+    combs = Base.product(projectors...)
+    n = length(combs)
+    n_perms = factorial(length(projectors))
+    joint_probs = [Vector{Float64}(undef,n) for _ ∈ 1:n_perms]
+    r = 1
+    for comb ∈ combs  
+        c = 1
+        for perm ∈ permutations(comb)
+            joint_probs[c][r] =  get_joint_prob(model, perm, Ψ)
+            c += 1
+        end
+        r += 1
+    end
+    return joint_probs
+end
+
+"""
+    get_joint_prob(model::AbstractQuantumModel, P1, P2, Ψ)
+
+Computes the joint probability of two events. 
+
+# Arguments
+
+- `model::AbstractQuantumModel`:an abstract quantum model object
+- `projectors`: a vector of projectors 
+- `Ψ`: superposition state vector 
+"""
+function get_joint_prob(model::AbstractQuantumModel, projectors, Ψ)
+    proj = prod(projectors) * Ψ
+    return proj' * proj 
+end
+
 const ⊗(x, y) = kron(x, y)
 
-function rand(dist::AbstractQuantumModel, n_trials::Int)
-    preds = predict(dist)
+function rand(
+        dist::AbstractQuantumModel,
+        n_trials::Int;
+        joint_fun=get_ordered_joint_probs,
+        n_way
+    )
+    preds = predict(dist; joint_fun, n_way)
+    return _rand(n_trials, preds)
+end
+
+function _rand(n_trials, preds::Vector{Vector{Vector{Float64}}})
+    return map(p -> rand.(Multinomial.(n_trials, p)), preds)
+end
+
+function _rand(n_trials, preds::Vector{Vector{Float64}})
     return rand.(Multinomial.(n_trials, preds))
 end
 

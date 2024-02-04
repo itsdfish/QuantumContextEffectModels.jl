@@ -20,7 +20,6 @@ function make_df(columns)
     vals = Base.product(fill([:Y,:N], n)...) |> collect
     df = DataFrame(vals[:])
     rename!(df, columns)
-    sort!(df, rev=true)
     return df 
 end
 
