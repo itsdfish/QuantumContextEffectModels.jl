@@ -5,6 +5,7 @@ cd(@__DIR__)
 using Pkg 
 Pkg.activate("..")
 using Revise
+using Combinatorics
 using QuantumContextEffectModels
 using DataFrames
 using Distributions 
@@ -41,9 +42,10 @@ function objective(Θ, data, columns, contexts, n)
     return -compute_log_like(Θ, data, columns, contexts, n)
 end
 
-columns = [:A,:B,:C]
+columns = [:A,:B,:C,:D]
 n = 1000 
-Θ = range(.1, 1, length=8) |> collect
+contexts = combinations(columns, 2) |> collect
+Θ = range(.1, 1, length=16) |> collect
 Θ ./= sum(Θ)
 data = simulate(Θ, columns, contexts, n)
 

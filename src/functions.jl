@@ -1,39 +1,9 @@
-
-
-    # variables 
-    # (B) believable 
-    # (P) persuasive 
-    # (I) informative
-    # (L) likable 
-
-    # values per dimension: Yes or No 
-    # total possible dimensions (if compatible) 2^4 = 16
-
-    # bases
-    # B and I 
-    # B and L 
-    # P and I
-    # P and L 
-
-    # note that:  
-    # P is a rotation of B 
-    # L is a rotation of I
-
-    # Basis vectors for B and I is in standard form and have four dimensions 
-    # ψyy: believable and informative 
-    # ψyn: believable and not informative 
-    # ψny: not believable and informative 
-    # ψnn: not believable and not informative 
-
-    # # rotate from b to p 
-    # θpb = .0
-    # # rotate from L to I 
-    # θli = .0
-
-    # Ψ = sqrt.([.3,.1,.2,.4])
-
 """
-    predict(model::AbstractQuantumModel)
+    predict(
+        model::AbstractQuantumModel; 
+        n_way, 
+        joint_func = get_ordered_joint_probs
+    )
 
 Computes response probabilities for six two-way joint probability tables.
 
@@ -41,6 +11,13 @@ Computes response probabilities for six two-way joint probability tables.
 # Arguments
 
 - `model::AbstractQuantumModel`:an abstract quantum model object
+
+# Keywords
+
+- `n_way`: the number of attributes judged simultaneously to form an n-way joint probability table 
+- `joint_func=get_ordered_joint_probs`: joint probability function. The function `get_ordered_joint_probs` returns 
+all possible orders where as the function `get_joint_probs` returns joint probabilities in the order specified in 
+`make_projectors`.
 
 # Returns  
 
@@ -70,14 +47,18 @@ combs = combinations(variables, 2) |> collect
 [:persuasive, :likeable]
 ```
 """
-function predict(model::AbstractQuantumModel; n_way, joint_fun=get_ordered_joint_probs)
+function predict(
+        model::AbstractQuantumModel; 
+        n_way, 
+        joint_func = get_ordered_joint_probs
+    )
     (;Ψ, θli, θpb) = model
     # generate all projectors 
     projectors = make_projectors(model)
     # generate all combinations of projectors for 2-way tables 
     combs = combinations(projectors, n_way)
     # generate all 2-way joint probability tables 
-    return map(p -> joint_fun(model, p, Ψ), combs)
+    return map(p -> joint_func(model, p, Ψ), combs)
 end
 
 """
@@ -139,9 +120,10 @@ U(θ) = [
 ]
 
 """
-    get_joint_probs(model::AbstractQuantumModel, P1, P2, Ψ)
+    get_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
 
-Computes the joint four probabilities of two binary (yes, no) events. The four joint probabilities are as follows:
+Computes joint probabilities for a distribution with an arbitrary number of dimensions and values per dimension. The total number of elements is `n = Πᵢᵐ nᵢ`,
+where `nᵢ` is the number of possible values for the ith dimension. For example, the joint probabilties for two binary variables is organized as follows:
 
 - `yes yes`
 - `yes no`
@@ -151,8 +133,7 @@ Computes the joint four probabilities of two binary (yes, no) events. The four j
 # Arguments
 
 - `model::AbstractQuantumModel`:an abstract quantum model object
-- `P1`: projector for the first event 
-- `P2`: projector for the second event 
+- `projectors`: a vector of projectors
 - `Ψ`: superposition state vector 
 """
 function get_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
@@ -168,20 +149,30 @@ function get_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
 end
 
 """
-    get_joint_probs(model::AbstractQuantumModel, P1, P2, Ψ)
+    get_ordered_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
 
-Computes the joint four probabilities of two binary (yes, no) events. The four joint probabilities are as follows:
+Computes joint probabilities for all posible orders. The function works for a distribution with an arbitrary number of dimensions and values per dimension. The total number of elements is `n = Πᵢᵐ nᵢ`,
+where `nᵢ` is the number of possible values for the ith dimension. For example, the joint probabilties for two binary variables is organized as follows:
+
+##  Order 1 
 
 - `yes yes`
 - `yes no`
 - `no yes`
 - `no no`
 
+
+##  Order 2
+
+- `yes yes`
+- `no yes`
+- `yes no`
+- `no no`
+
 # Arguments
 
 - `model::AbstractQuantumModel`:an abstract quantum model object
-- `P1`: projector for the first event 
-- `P2`: projector for the second event 
+- `projectors`: a vector of projectors
 - `Ψ`: superposition state vector 
 """
 function get_ordered_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
@@ -189,22 +180,22 @@ function get_ordered_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
     n = length(combs)
     n_perms = factorial(length(projectors))
     joint_probs = [Vector{Float64}(undef,n) for _ ∈ 1:n_perms]
-    r = 1
+    c = 1
     for comb ∈ combs  
-        c = 1
+        order = 1
         for perm ∈ permutations(comb)
-            joint_probs[c][r] =  get_joint_prob(model, perm, Ψ)
-            c += 1
+            joint_probs[order][c] = get_joint_prob(model, perm, Ψ)
+            order += 1
         end
-        r += 1
+        c += 1
     end
     return joint_probs
 end
 
 """
-    get_joint_prob(model::AbstractQuantumModel, P1, P2, Ψ)
+    get_joint_prob(model::AbstractQuantumModel, projectors, Ψ)
 
-Computes the joint probability of two events. 
+Computes the joint probability of a sequence of events whose projectors are defined in `projectors`. 
 
 # Arguments
 
@@ -219,13 +210,35 @@ end
 
 const ⊗(x, y) = kron(x, y)
 
+"""
+    rand(
+        dist::AbstractQuantumModel,
+        n_trials::Int;
+        joint_func = get_ordered_joint_probs,
+        n_way
+    )
+
+Simulates `n_trials` of judgements per condition for all possible ordered pairs of size `n_way`.
+
+# Arguments
+
+- `model::AbstractQuantumModel`:an abstract quantum model object
+- `projectors`: a vector of projectors 
+
+# Keywords 
+
+- `joint_func=get_ordered_joint_probs`: joint probability function. The function `get_ordered_joint_probs` returns 
+all possible orders where as the function `get_joint_probs` returns joint probabilities in the order specified in 
+`make_projectors`.
+- `n_way`: the number of attributes simultaneously judged, forming an n_way-table. 
+"""
 function rand(
         dist::AbstractQuantumModel,
         n_trials::Int;
-        joint_fun=get_ordered_joint_probs,
+        joint_func = get_ordered_joint_probs,
         n_way
     )
-    preds = predict(dist; joint_fun, n_way)
+    preds = predict(dist; joint_func, n_way)
     return _rand(n_trials, preds)
 end
 
