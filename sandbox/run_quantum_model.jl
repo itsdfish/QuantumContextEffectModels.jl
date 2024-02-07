@@ -17,7 +17,9 @@ preds = predict(
     n_way = 2
 )
 
-sum.(preds)
+data = rand(model, 100; n_way=2)
+logpdf(model, data, 100; n_way=2)
+
 
 var_names = [
     :B,

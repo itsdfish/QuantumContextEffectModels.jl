@@ -8,7 +8,7 @@ First, we will load the required packages below.
 
 ```julia
 using Pigeons
-using QuantumOrderEffectModels
+using QuantumContextEffectModels
 using Random
 using StatsPlots
 using Turing

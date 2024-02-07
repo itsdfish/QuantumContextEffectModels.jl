@@ -155,10 +155,8 @@ function to_dataframe(
     for (vars,vals) ∈ zip(var_combs, vals_combs)
         group_idx += 1
         val_idx = 0
-        println(vars)
         for v ∈ vals
             val_idx += 1
-            #println((group_idx, a, [v...], data[group_idx][val_idx]))
             push!(df, (group_idx, vars, [v...], data[group_idx][val_idx]))
         end
     end
@@ -167,6 +165,12 @@ function to_dataframe(
 end
 
 """
+    to_tables(
+        data::Vector{Vector{Vector{T}}},
+        attributes::T1,
+        values::T2,
+        n_way::Int
+    )
 Returns a nested vector of DataFrames where each DataFrame is an `n₁ × n₂` joint probability table. Each sub-vector
 of DataFrames contains a DataFrame for each order of a fixed set of attributes. 
 
@@ -196,11 +200,11 @@ julia> df[1]
 ```
 """
 function to_tables(
-        data::Vector{Vector{Vector{Float64}}},
+        data::Vector{Vector{Vector{T}}},
         attributes::T1,
         values::T2,
         n_way::Int
-    ) where {T1,T2}
+    ) where {T,T1,T2}
 
     df_long = to_dataframe(data, attributes, values, n_way)
     dfs = Vector{Vector{DataFrame}}()
@@ -215,16 +219,47 @@ function to_tables(
     end
     return dfs
 end
+
 """
-Returns a nested vector of DataFrames where each DataFrame is an `n₁ × n₂` joint probability table. Each sub-vector
-of DataFrames contains a DataFrame for each order of a fixed set of attributes. 
-"""
-function to_tables(
+    to_tables(
         data::Vector{Vector{Float64}},
         attributes::T1,
         values::T2,
         n_way::Int
-    ) where {T1,T2}
+    )
+
+Returns a nested vector of DataFrames where each DataFrame is an `n₁ × n₂` joint probability table. Each sub-vector
+of DataFrames contains a DataFrame for each order of a fixed set of attributes. 
+
+# Example Output
+
+``` julia
+julia> df[1:2]
+2-element Vector{DataFrames.DataFrame}:
+ 4×4 DataFrame
+ Row │ group  attributes  values        preds   
+     │ Int64  Array…      Array…        Float64 
+─────┼──────────────────────────────────────────
+   1 │     1  [:B, :I]    [:yes, :yes]      0.3
+   2 │     1  [:B, :I]    [:no, :yes]       0.2
+   3 │     1  [:B, :I]    [:yes, :no]       0.1
+   4 │     1  [:B, :I]    [:no, :no]        0.4
+ 4×4 DataFrame
+ Row │ group  attributes  values        preds     
+     │ Int64  Array…      Array…        Float64   
+─────┼────────────────────────────────────────────
+   1 │     2  [:B, :P]    [:yes, :yes]  0.329624
+   2 │     2  [:B, :P]    [:no, :yes]   0.624449
+   3 │     2  [:B, :P]    [:yes, :no]   0.0300594
+   4 │     2  [:B, :P]    [:no, :no]    0.0158673
+```
+"""
+function to_tables(
+        data::Vector{Vector{T}},
+        attributes::T1,
+        values::T2,
+        n_way::Int
+    ) where {T,T1,T2}
 
     df_long = to_dataframe(data, attributes, values, n_way)
     dfs = DataFrame[]

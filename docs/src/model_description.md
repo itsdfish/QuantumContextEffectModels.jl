@@ -205,13 +205,8 @@ The code used to generate the predictions can be viewed by expanding the code bl
 <summary><b>Show Code</b></summary>
 ```
 ```@example model_preds
-using QuantumOrderEffectModels
-Ψ = [√(.676 / 2),√(.676 / 2),√(.324 / 2),√(.324 / 2)]
-γₕ = 4.4045 / √(.5)
-γₗ = 0.3306 / √(.5)
-σ = .10
-model = QOEM(;Ψ, γₕ, γₗ, σ)
-predict(model)
+using QuantumContextEffectModels
+
 ```
 ```@raw html
 </details>

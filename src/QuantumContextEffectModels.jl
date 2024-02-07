@@ -16,12 +16,14 @@ module QuantumContextEffectModels
     export add_labels
     export get_ordered_joint_probs
     export get_joint_probs
+    export logpdf
     export make_projectors
     export predict  
+    export rand
     export to_dataframe
     export to_tables
 
-    include("structs.jl")
-    include("functions.jl")
+    include("core.jl")
+    include("quantum_model.jl")
     include("utilities.jl")
 end

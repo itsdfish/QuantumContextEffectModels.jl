@@ -21,6 +21,7 @@ makedocs(
     pages=[
         "Home" => "index.md",
         "Basic Usage" => "basic_usage.md",
+        "Developing a Model" => "developing_a_model.md",
         "Model Description" => "model_description.md",
         "Parameter Estimation" => "parameter_estimation.md",
         "API" => "api.md",

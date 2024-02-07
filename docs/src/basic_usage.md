@@ -17,40 +17,38 @@ The quantum order effect model (QOEM) generates predictions for six conditions:
 6. Pr(disease | medical history, lab test)
 
 ```@example 
-using QuantumOrderEffectModels
-Ψ = @. √([.35,.35,.15,.15])
-γₕ = 2
-γₗ = .5
-σ = .05
-model = QOEM(;Ψ, γₕ, γₗ, σ)
-predict(model)
+using QuantumContextEffectModels
+n_way = 2
+parms = (
+    Ψ = sqrt.([.3,.1,.2,.4]),
+    θli = .3,
+    θpb = .3,
+)
+
+model = QuantumModel(; parms...)
+preds = predict(model; n_way)
+
+var_names = [
+    :B,
+    :I,
+    :P,
+    :L
+]
+values = fill([:yes,:no], 4)
+
+df = to_tables(preds, var_names, values, n_way)
 ```
 
 # Simulate Model
 
 The code block below demonstrates how to generate simulated data from the model using `rand`. In the example, we will generate 100 simulated trials for each condition. 
 ```@example 
-using QuantumOrderEffectModels
-Ψ = @. √([.35,.35,.15,.15])
-γₕ = 2
-γₗ = .5
-σ = .05
-n_trials = 100
-model = QOEM(;Ψ, γₕ, γₗ, σ)
-data = rand(model, n_trials)
+using QuantumContextEffectModels
 ```
 
 # Evaluate Log Likelihood
 
 The log likelihood of data can be evaluated using `logpdf`. In the code block below, we generate simulated data and evaluate the logpdf: 
 ```@example 
-using QuantumOrderEffectModels
-Ψ = @. √([.35,.35,.15,.15])
-γₕ = 2
-γₗ = .5
-σ = .05
-n_trials = 100
-model = QOEM(;Ψ, γₕ, γₗ, σ)
-data = rand(model, n_trials)
-logpdf(model, data)
+using QuantumContextEffectModels
 ```

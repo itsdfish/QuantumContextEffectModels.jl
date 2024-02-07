@@ -1,3 +1,7 @@
+abstract type AbstractQuantumModel end 
+
+function make_projectors(model::AbstractQuantumModel) end
+
 """
     predict(
         model::AbstractQuantumModel; 
@@ -62,50 +66,6 @@ function predict(
 end
 
 """
-    make_projectors(model::QuantumModel)
-
-Returns projectors for each value of each variable. 
-
-# Arguments
-
-- `model::AbstractQuantumModel`:an abstract quantum model object
-
-# Returns 
-
-- `projectors::Vector{Vector{Float64}}`: a nested vector of projectors 
-
-For this model, there are four variables (believable,infromative,persuasive,likable) with binary values (yes, no).
-The projectors organized as follows `[[Pby Pbn],[Piy Pin],[Ppy Ppn],[Ply Pln]]`, where the first index corresponds
-to the variable and the second index correspons to the binary value. For example, `Pbn`,
-is the projector for responding "no" to the question about believable. 
-"""
-function make_projectors(model::QuantumModel)
-    (;θli, θpb) = model
-
-    # 2D projector for responding "yes"
-    My = [1 0; 0 0]
-    # unitary transformation matrices
-    Upb = U(θpb)
-    Uli = U(θli)
-
-    # projector for responding "yes" to believable
-    Pb = My ⊗ I(2)
-    # projector for responding "yes" to informative
-    Pi = I(2) ⊗ My
-    # projector for responding "yes" to persuasive    
-    Pp = (Upb * My * Upb') ⊗ I(2)
-    # projector for responding "yes" to likable    
-    Pl = I(2) ⊗ (Uli * My * Uli')
-    projectors = [
-        [Pb,I(4)-Pb],
-        [Pi,I(4)-Pi],
-        [Pp,I(4)-Pp],
-        [Pl,I(4)-Pl],
-    ]
-    return projectors
-end
-
-"""
     U(θ)
 
 Generates a 2 × 2 unitary transition matrix by rotating the standard basis.
@@ -152,22 +112,7 @@ end
     get_ordered_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
 
 Computes joint probabilities for all posible orders. The function works for a distribution with an arbitrary number of dimensions and values per dimension. The total number of elements is `n = Πᵢᵐ nᵢ`,
-where `nᵢ` is the number of possible values for the ith dimension. For example, the joint probabilties for two binary variables is organized as follows:
-
-##  Order 1 
-
-- `yes yes`
-- `yes no`
-- `no yes`
-- `no no`
-
-
-##  Order 2
-
-- `yes yes`
-- `no yes`
-- `yes no`
-- `no no`
+where `nᵢ` is the number of possible values for the ith dimension. 
 
 # Arguments
 
@@ -252,4 +197,50 @@ end
 
 function rand(dist::AbstractQuantumModel, n_trials::Int, n_reps::Int)
     return map(_ -> rand(dist, n_trials), 1:n_reps)
+end
+
+function logpdf(
+        dist::AbstractQuantumModel,
+        data::Vector{Vector{Vector{Int}}},
+        n_trials::Int;
+        n_way
+    )
+
+    preds = predict(
+        dist; 
+        joint_func = get_ordered_joint_probs,
+        n_way
+    )
+    return sum(_logpdf(n_trials, data, preds))
+end
+
+function logpdf(
+        dist::AbstractQuantumModel,
+        data::Vector{Vector{Int}},
+        n_trials::Int;
+        n_way
+    )
+
+    preds = predict(
+        dist; 
+        joint_func = get_joint_probs,
+        n_way
+    )
+    return _logpdf(n_trials, data, preds)
+end
+
+function _logpdf(
+        n_trials, 
+        data::Vector{Vector{Vector{Int}}}, 
+        preds::Vector{Vector{Vector{Float64}}}
+    )
+    return mapreduce((p,d) -> logpdf.(Multinomial.(n_trials, p), d), +, preds, data)
+end
+
+function _logpdf(
+        n_trials, 
+        data::Vector{Vector{Int}},
+        preds::Vector{Vector{Float64}}
+    )
+    return sum(logpdf.(Multinomial.(n_trials, preds), data))
 end

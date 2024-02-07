@@ -132,3 +132,66 @@ end
     # persuasive and likeable are compatible 
     @test preds[6][1] ≈ preds[6][2]
 end
+
+@safetestset "logpdf" begin 
+    @safetestset "no order" begin 
+        using QuantumContextEffectModels
+        using Random 
+        using Test
+
+        Random.seed!(5774)
+
+        Ψ = sqrt.([.3,.1,.2,.4])
+        θli = .3
+        θpb = .3
+
+        parms = (;Ψ, θli, θpb)
+
+        n_trials = 10_000
+        model = QuantumModel(; parms...)
+        data = rand(
+            model,
+            n_trials;
+            n_way = 2,
+            joint_func = get_joint_probs
+        )
+        
+        θlis = range(.8 * θli, 1.2 * θli, length=100)
+        LLs = map(θli -> logpdf(QuantumModel(; parms..., θli), data, n_trials; n_way=2), θlis)
+        _,idx = findmax(LLs)
+        @test θlis[idx] ≈ θli atol = 1e-2
+
+        θpbs = range(.8 * θpb, 1.2 * θpb, length=100)
+        LLs = map(θpb -> logpdf(QuantumModel(; parms..., θpb), data, n_trials; n_way=2), θpbs)
+        _,idx = findmax(LLs)
+        @test θlis[idx] ≈ θli atol = 1e-2
+    end
+
+    @safetestset "order" begin 
+        using QuantumContextEffectModels
+        using Random 
+        using Test
+
+        Random.seed!(5774)
+        
+        Ψ = sqrt.([.3,.1,.2,.4])
+        θli = .3
+        θpb = .3
+
+        parms = (;Ψ, θli, θpb)
+
+        n_trials = 10_000
+        model = QuantumModel(; parms...)
+        data = rand(model, n_trials; n_way=2)
+        
+        θlis = range(.8 * θli, 1.2 * θli, length=100)
+        LLs = map(θli -> logpdf(QuantumModel(; parms..., θli), data, n_trials; n_way=2), θlis)
+        _,idx = findmax(LLs)
+        @test θlis[idx] ≈ θli atol = 1e-2
+
+        θpbs = range(.8 * θpb, 1.2 * θpb, length=100)
+        LLs = map(θpb -> logpdf(QuantumModel(; parms..., θpb), data, n_trials; n_way=2), θpbs)
+        _,idx = findmax(LLs)
+        @test θlis[idx] ≈ θli atol = 1e-2
+    end
+end
