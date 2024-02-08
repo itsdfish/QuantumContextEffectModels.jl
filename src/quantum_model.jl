@@ -11,7 +11,7 @@
 
 Busemeyer, J. R., & Wang, Z. (2018). Hilbert space multidimensional theory. Psychological Review, 125(4), 572.
 """
-mutable struct QuantumModel{T<:Real} <: AbstractQuantumModel
+mutable struct QuantumModel{T<:Real} <: AbstractQuantumModel{T}
     Ψ::Vector{T}
     θli::T 
     θpb::T 

@@ -1,6 +1,37 @@
 # Parameter Estimation
 
-This brief tutorial explains how to performance Bayesian parameter estimation of the QPDM using [Pigeons.jl](https://github.com/Julia-Tempering/Pigeons.jl). One complication in estimating the parameters of the QPDM is that the posterior distributions may have multiple modes, which leads to convergence problems with most MCMC algorithms. Pigeons.jl uses a special type of parallel tempering to overcome this challenge. An additional advantage of using Pigeons.jl is the ability to compute Bayes factors from the log marginal likelihood using the function `stepping_stone`.
+This brief tutorial explains how to performance Bayesian parameter estimation of the quantum context effect model (QCEM) using [Pigeons.jl](https://github.com/Julia-Tempering/Pigeons.jl). One complication in estimating the parameters of the QCEM is that the posterior distributions may have multiple modes, which leads to convergence problems with most MCMC algorithms. Pigeons.jl uses a special type of parallel tempering to overcome this challenge. An additional advantage of using Pigeons.jl is the ability to compute Bayes factors from the log marginal likelihood using the function `stepping_stone`.
+
+```@raw html
+<details>
+<summary><b>Show Code</b></summary>
+```
+```@example model_preds
+using QuantumContextEffectModels
+using Plots 
+parms = (
+    Ψ = sqrt.([.3,.1,.2,.4]),
+    θli = .3,
+    θpb = .3,
+)
+θlis = range(-1, 1, length=1001)
+preds = map(
+        θli -> predict(
+            QuantumModel(; parms..., θli); 
+            joint_func = get_joint_probs,
+            n_way = 2
+        ), θlis)
+
+preds = map(p -> p[5], preds)
+
+preds = stack(preds)'
+p1 = plot(θlis[1:500], preds[1:500,:], leg=false, title="first half [-1,0)")
+p2 = plot(θlis[1:500], preds[501:end-1,:], leg=false, title="second half [0,1)")
+plot(p1, p2, layout=(2,1))
+```
+```@raw html
+</details>
+```
 
 ## Load Packages
 
@@ -18,12 +49,16 @@ using Turing
 
 The next step is to generate some simulated data from which the parameters can be estimated. In the code block below, the utility parameter $\mu_d$ is set to one and the entanglement parameter is set to $\gamma = 2$.  A total of 50 trials is generated for each of the three conditions. The resulting values represent the number of defections per condition out of 50.
 ```julia
-Random.seed!(16)
-Ψ = @. √([.35,.35,.15,.15])
-parms = (Ψ, γₕ = 2.0, γₗ = 1.0, σ = .05)
-n_trials = 50
-model = QOEM(;parms...)
-data = rand(model, n_trials)
+Random.seed!(84)
+n_trials = 25
+n_way = 2
+parms = (
+    Ψ = sqrt.([.7,.1,.1,.1]),
+    θli = .6,
+    θpb = .3,
+)
+model = QuantumModel(; parms...)
+data = rand(model, n_trials; n_way)
 ```
 
 ## Define Turing Model
@@ -31,12 +66,14 @@ data = rand(model, n_trials)
 The next step is to define a Turing model with the `@model` macro. We will estimate the entanglement parameters using the prior $\gamma_j \sim \mathrm{normal}(0,3)$. The other parameters will be fixed to the data generating values defined in the code block above.
 
 ```julia 
-@model function turing_model(data, parms)
-    γₕ ~ Normal(0, 3)
-    γₗ ~ Normal(0, 3)
-    σ ~ LogNormal(-1, 1)
-    data ~ QOEM(;parms..., γₕ, γₗ, σ)
+@model function turing_model(data, parms, n_trials; n_way)
+    θli ~ Uniform(0, 1)
+    θpb ~ Uniform(0, 1)
+    model = QuantumModel(; parms..., θli, θpb)
+    Turing.@addlogprob! logpdf(model, data, n_trials; n_way)
 end
+
+sampler = turing_model(data, parms, n_trials; n_way)
 ```
 
 ## Estimate Parameters
@@ -44,11 +81,16 @@ end
 To estimate the parameters, we need to pass the Turing model to `pigeons`. The second command converts the output to an `MCMCChain` object, which can be used for plotting
 ```julia
 pt = pigeons(
-    target=TuringLogPotential(turing_model(data, parms)), 
+    target=TuringLogPotential(sampler), 
     record=[traces],
     multithreaded=true)
-samples = Chains(sample_array(pt), ["γₕ", "γₗ","σ","LL"])
+samples = Chains(sample_array(pt), ["θli", "θbp", "LL"])
 plot(samples)
+```
+
+```julia 
+chain = sample(sampler, NUTS(1000, .85), MCMCThreads(), 1000, 4)
+plot(chain)
 ```
 The trace of the `pigeon`'s sampler is given below:
 ```julia

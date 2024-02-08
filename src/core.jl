@@ -1,4 +1,4 @@
-abstract type AbstractQuantumModel end 
+abstract type AbstractQuantumModel{T} end 
 
 function make_projectors(model::AbstractQuantumModel) end
 
@@ -120,11 +120,11 @@ where `nᵢ` is the number of possible values for the ith dimension.
 - `projectors`: a vector of projectors
 - `Ψ`: superposition state vector 
 """
-function get_ordered_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
+function get_ordered_joint_probs(model::AbstractQuantumModel{T}, projectors, Ψ) where {T}
     combs = Base.product(projectors...)
     n = length(combs)
     n_perms = factorial(length(projectors))
-    joint_probs = [Vector{Float64}(undef,n) for _ ∈ 1:n_perms]
+    joint_probs = [Vector{T}(undef,n) for _ ∈ 1:n_perms]
     c = 1
     for comb ∈ combs  
         order = 1
@@ -232,15 +232,15 @@ end
 function _logpdf(
         n_trials, 
         data::Vector{Vector{Vector{Int}}}, 
-        preds::Vector{Vector{Vector{Float64}}}
-    )
+        preds::Vector{Vector{Vector{T}}}
+    ) where {T}
     return mapreduce((p,d) -> logpdf.(Multinomial.(n_trials, p), d), +, preds, data)
 end
 
 function _logpdf(
         n_trials, 
         data::Vector{Vector{Int}},
-        preds::Vector{Vector{Float64}}
-    )
+        preds::Vector{Vector{T}}
+    ) where {T}
     return sum(logpdf.(Multinomial.(n_trials, preds), data))
 end
