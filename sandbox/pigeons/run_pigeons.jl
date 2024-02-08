@@ -53,7 +53,7 @@ plot(pt.shared.tempering.communication_barriers.localbarrier)
 chain = sample(sampler, NUTS(1000, .85), MCMCThreads(), 1000, 4)
 plot(chain)
 ####################################################################################
-#                           marginal likelihood surface
+#                         marginal likelihood surface
 ####################################################################################
 θlis = range(-.99, .99, length=10_000)
 LLs = map(θli -> logpdf(QuantumModel(; parms..., θli), data, n_trials; n_way=2), θlis)

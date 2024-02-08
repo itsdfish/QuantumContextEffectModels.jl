@@ -1,3 +1,6 @@
+!!! warning "Warning"
+    Documentation is under construction
+
 # QuantumContextEffectModels.jl
 
 This package contains code for a quantum cognition model of order effects in medical diagonsis.
