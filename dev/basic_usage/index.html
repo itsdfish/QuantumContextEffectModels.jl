@@ -1,5 +1,61 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Basic Usage · QuantumContextEffectModels</title><meta name="title" content="Basic Usage · QuantumContextEffectModels"/><meta property="og:title" content="Basic Usage · QuantumContextEffectModels"/><meta property="twitter:title" content="Basic Usage · QuantumContextEffectModels"/><meta name="description" content="Documentation for QuantumContextEffectModels."/><meta property="og:description" content="Documentation for QuantumContextEffectModels."/><meta property="twitter:description" content="Documentation for QuantumContextEffectModels."/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="https://fonts.googleapis.com/css?family=Montserrat|Source+Code+Pro&amp;display=swap" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">QuantumContextEffectModels</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Basic Usage</a><ul class="internal"><li class="toplevel"><a class="tocitem" href="#Make-Predictions"><span>Make Predictions</span></a></li><li><a class="tocitem" href="#Order-1"><span>Order 1</span></a></li><li><a class="tocitem" href="#Order-2"><span>Order 2</span></a></li><li class="toplevel"><a class="tocitem" href="#Simulate-Model"><span>Simulate Model</span></a></li><li class="toplevel"><a class="tocitem" href="#Evaluate-Log-Likelihood"><span>Evaluate Log Likelihood</span></a></li></ul></li><li><a class="tocitem" href="../developing_a_model/">Developing a Model</a></li><li><a class="tocitem" href="../model_description/">Model Description</a></li><li><a class="tocitem" href="../parameter_estimation/">Parameter Estimation</a></li><li><a class="tocitem" href="../api/">API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Basic Usage</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Basic Usage</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/itsdfish/QuantumContextEffectModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/itsdfish/QuantumContextEffectModels.jl/blob/main/docs/src/basic_usage.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h1><p>This page provides an overview of the API along with examples. </p><h1 id="Make-Predictions"><a class="docs-heading-anchor" href="#Make-Predictions">Make Predictions</a><a id="Make-Predictions-1"></a><a class="docs-heading-anchor-permalink" href="#Make-Predictions" title="Permalink"></a></h1><p>The quantum order effect model (QOEM) generates predictions for six conditions:</p><h2 id="Order-1"><a class="docs-heading-anchor" href="#Order-1">Order 1</a><a id="Order-1-1"></a><a class="docs-heading-anchor-permalink" href="#Order-1" title="Permalink"></a></h2><ol><li>Pr(disease)</li><li>Pr(disease | lab test)</li><li>Pr(disease | lab test, medical history)</li></ol><h2 id="Order-2"><a class="docs-heading-anchor" href="#Order-2">Order 2</a><a id="Order-2-1"></a><a class="docs-heading-anchor-permalink" href="#Order-2" title="Permalink"></a></h2><ol><li>Pr(disease)</li><li>Pr(disease | medical history)</li><li>Pr(disease | medical history, lab test)</li></ol><pre><code class="language-julia hljs">using QuantumContextEffectModels
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Basic Usage · QuantumContextEffectModels</title><meta name="title" content="Basic Usage · QuantumContextEffectModels"/><meta property="og:title" content="Basic Usage · QuantumContextEffectModels"/><meta property="twitter:title" content="Basic Usage · QuantumContextEffectModels"/><meta name="description" content="Documentation for QuantumContextEffectModels."/><meta property="og:description" content="Documentation for QuantumContextEffectModels."/><meta property="twitter:description" content="Documentation for QuantumContextEffectModels."/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="https://fonts.googleapis.com/css?family=Montserrat|Source+Code+Pro&amp;display=swap" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">QuantumContextEffectModels</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Basic Usage</a><ul class="internal"><li><a class="tocitem" href="#Make-Predictions"><span>Make Predictions</span></a></li><li><a class="tocitem" href="#Simulate-Model"><span>Simulate Model</span></a></li><li><a class="tocitem" href="#Labeled-Tables"><span>Labeled Tables</span></a></li><li><a class="tocitem" href="#DataFrame"><span>DataFrame</span></a></li><li><a class="tocitem" href="#Evaluate-Log-Likelihood"><span>Evaluate Log Likelihood</span></a></li></ul></li><li><a class="tocitem" href="../developing_a_model/">Developing a Model</a></li><li><a class="tocitem" href="../model_description/">Model Description</a></li><li><a class="tocitem" href="../parameter_estimation/">Parameter Estimation</a></li><li><a class="tocitem" href="../api/">API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Basic Usage</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Basic Usage</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/itsdfish/QuantumContextEffectModels.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/itsdfish/QuantumContextEffectModels.jl/blob/main/docs/src/basic_usage.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h1><p>The purpose of this page is to demonstrate basic usage of the API. The following examples will be based on the context efect model described in Busemeyer &amp; Wang (2018). A brief description of the model can be found <a href="../developing_a_model/">here</a> and a more detailed description can be found <a href="../model_description/">here</a>.</p><h2 id="Make-Predictions"><a class="docs-heading-anchor" href="#Make-Predictions">Make Predictions</a><a id="Make-Predictions-1"></a><a class="docs-heading-anchor-permalink" href="#Make-Predictions" title="Permalink"></a></h2><p>The function <code>predict</code> will generate all possible joint probability tables of a dimensionality specified by <code>n_way</code>. </p><h3 id="Two-way-Tables"><a class="docs-heading-anchor" href="#Two-way-Tables">Two-way Tables</a><a id="Two-way-Tables-1"></a><a class="docs-heading-anchor-permalink" href="#Two-way-Tables" title="Permalink"></a></h3><p>The code block below demonstrates how to generate predictions for 2-way joint probability tables. Each table is of size <span>$2 \times 2$</span> because each attribute is binary. Given four attributes and <code>n_way=2</code>, there are <span>$P(4,2) = 12$</span> joint probability tables in total (including the order of attributes within a pair). </p><pre><code class="language-julia hljs">using QuantumContextEffectModels
+n_way = 2
+parms = (
+    Ψ = sqrt.([.3,.1,.2,.4]),
+    θli = .3,
+    θpb = .3,
+)
+
+model = QuantumModel(; parms...)
+preds = predict(model; n_way)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">6-element Vector{Vector{Vector{Float64}}}:
+ [[0.29999999999999993, 0.19999999999999998, 0.1, 0.4], [0.29999999999999993, 0.19999999999999998, 0.1, 0.4]]
+ [[0.3296242254116391, 0.6244490954320945, 0.03005940175537921, 0.015867277400887215], [0.13819660112501053, 0.3927050983124843, 0.2618033988749895, 0.2072949016875158]]
+ [[0.33382612127177164, 0.5999011042230776, 0.06617387872822834, 9.889577692232744e-5], [0.33382612127177164, 0.5999011042230776, 0.06617387872822834, 9.889577692232744e-5]]
+ [[0.46750946842846075, 0.4865638524152729, 0.03249053157153925, 0.013436147584727174], [0.46750946842846075, 0.4865638524152729, 0.03249053157153925, 0.013436147584727174]]
+ [[0.3225948223531861, 0.6111324031416632, 0.043376094045810484, 0.02289668045934019], [0.17274575140626314, 0.3272542485937369, 0.32725424859373686, 0.17274575140626316]]
+ [[0.9335790596597751, 0.00014816583507435547, 0.02049426118395861, 0.04577851332119207], [0.9335790596597751, 0.00014816583507435547, 0.02049426118395861, 0.04577851332119207]]</code></pre><p>The nested vector <code>preds</code> contains <span>$C(4,2) = 6$</span> combinations of attributes (ignoring order). As shown below, each sub-vector contains a flattened joint probability table, one for each order. </p><pre><code class="language-julia hljs">preds[1]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{Vector{Float64}}:
+ [0.29999999999999993, 0.19999999999999998, 0.1, 0.4]
+ [0.29999999999999993, 0.19999999999999998, 0.1, 0.4]</code></pre><h3 id="Three-way-Tables"><a class="docs-heading-anchor" href="#Three-way-Tables">Three-way Tables</a><a id="Three-way-Tables-1"></a><a class="docs-heading-anchor-permalink" href="#Three-way-Tables" title="Permalink"></a></h3><p>The code block below shows how to create all possible joint probability tables of dimensionality 3 by changing <code>n_way=2</code> to <code>n_way=3</code>. In this example,there are <span>$P(4,3) = 24$</span> joint probability tables (6 orders for each unique set of 3 attributes). </p><pre><code class="language-julia hljs">preds = predict(model; n_way = 3)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">4-element Vector{Vector{Vector{Float64}}}:
+ [[0.1615205488264342, 0.30598891960202657, 0.1681036765852049, 0.31846017583006797, 0.02126532899171032, 0.011225202579828931, 0.00879407276366889, 0.004642074821058283], [0.1615205488264342, 0.30598891960202657, 0.1681036765852049, 0.31846017583006797, 0.02126532899171032, 0.011225202579828931, 0.00879407276366889, 0.004642074821058283], [0.1615205488264342, 0.30598891960202657, 0.1681036765852049, 0.31846017583006797, 0.02126532899171032, 0.011225202579828931, 0.00879407276366889, 0.004642074821058283], [0.10364745084375789, 0.13090169943749475, 0.03454915028125263, 0.26180339887498955, 0.19635254915624212, 0.06909830056250527, 0.06545084971874739, 0.13819660112501053], [0.10364745084375789, 0.13090169943749475, 0.03454915028125263, 0.26180339887498955, 0.19635254915624212, 0.06909830056250527, 0.06545084971874739, 0.13819660112501053], [0.10364745084375789, 0.13090169943749475, 0.03454915028125263, 0.26180339887498955, 0.19635254915624212, 0.06909830056250527, 0.06545084971874739, 0.13819660112501053]]
+ [[0.11533408831626103, 0.20726073403692505, 0.21849203295551062, 0.3926403701861526, 0.043311365919478866, 6.472812633162075e-5, 0.022862512808749482, 3.4167650590706694e-5], [0.10364745084375789, 0.06909830056250527, 0.06545084971874739, 0.26180339887498955, 0.19635254915624212, 0.13090169943749475, 0.03454915028125263, 0.13819660112501053], [0.11533408831626103, 0.20726073403692505, 0.21849203295551062, 0.3926403701861526, 0.043311365919478866, 6.472812633162075e-5, 0.022862512808749482, 3.4167650590706694e-5], [0.11533408831626103, 0.20726073403692505, 0.21849203295551062, 0.3926403701861526, 0.043311365919478866, 6.472812633162075e-5, 0.022862512808749482, 3.4167650590706694e-5], [0.10364745084375789, 0.06909830056250527, 0.06545084971874739, 0.26180339887498955, 0.19635254915624212, 0.13090169943749475, 0.03454915028125263, 0.13819660112501053], [0.10364745084375789, 0.06909830056250527, 0.06545084971874739, 0.26180339887498955, 0.19635254915624212, 0.13090169943749475, 0.03454915028125263, 0.13819660112501053]]
+ [[0.3225436323161609, 0.6110354273436143, 9.697579804904305e-5, 5.119003702531242e-5, 0.007080593095478287, 0.013413668088480324, 0.029962425957330167, 0.015816087363861902], [0.3225436323161609, 0.6110354273436143, 9.697579804904305e-5, 5.119003702531242e-5, 0.007080593095478287, 0.013413668088480324, 0.029962425957330167, 0.015816087363861902], [0.11533408831626105, 0.3926403701861527, 0.21849203295551065, 0.20726073403692513, 0.022862512808749482, 6.47281263316202e-5, 0.04331136591947887, 3.4167650590707026e-5], [0.11533408831626105, 0.3926403701861527, 0.21849203295551065, 0.20726073403692513, 0.022862512808749482, 6.47281263316202e-5, 0.04331136591947887, 3.4167650590707026e-5], [0.3225436323161609, 0.6110354273436143, 9.697579804904305e-5, 5.119003702531242e-5, 0.007080593095478287, 0.013413668088480324, 0.029962425957330167, 0.015816087363861902], [0.11533408831626105, 0.3926403701861527, 0.21849203295551065, 0.20726073403692513, 0.022862512808749482, 6.47281263316202e-5, 0.04331136591947887, 3.4167650590707026e-5]]
+ [[0.3225436323161608, 0.6110354273436143, 5.11900370253121e-5, 9.697579804904337e-5, 0.01341366808848032, 0.007080593095478291, 0.029962425957330167, 0.015816087363861902], [0.3225436323161608, 0.6110354273436143, 5.11900370253121e-5, 9.697579804904337e-5, 0.01341366808848032, 0.007080593095478291, 0.029962425957330167, 0.015816087363861902], [0.3225436323161608, 0.6110354273436143, 5.11900370253121e-5, 9.697579804904337e-5, 0.01341366808848032, 0.007080593095478291, 0.029962425957330167, 0.015816087363861902], [0.16152054882643424, 0.3184601758300681, 0.011225202579828928, 0.00879407276366889, 0.30598891960202657, 0.16810367658520492, 0.021265328991710325, 0.004642074821058287], [0.16152054882643424, 0.3184601758300681, 0.011225202579828928, 0.00879407276366889, 0.30598891960202657, 0.16810367658520492, 0.021265328991710325, 0.004642074821058287], [0.16152054882643424, 0.3184601758300681, 0.011225202579828928, 0.00879407276366889, 0.30598891960202657, 0.16810367658520492, 0.021265328991710325, 0.004642074821058287]]</code></pre><p>In general, if there are <span>$n_a$</span> attributes, the function <code>predict</code> can generate tables of dimensionality <span>$[1,2,\dots, n_a]$</span>.</p><h3 id="Single-Order"><a class="docs-heading-anchor" href="#Single-Order">Single Order</a><a id="Single-Order-1"></a><a class="docs-heading-anchor-permalink" href="#Single-Order" title="Permalink"></a></h3><p>As shown below, you can assign the function <code>get_joint_probs</code> to the keyword <code>joint_func</code> to omit the orders of joint probability tables (e.g., [A,B] instead of [A,B], [B,A]). </p><pre><code class="language-julia hljs">using QuantumContextEffectModels
+n_way = 2
+parms = (
+    Ψ = sqrt.([.3,.1,.2,.4]),
+    θli = .3,
+    θpb = .3,
+)
+
+model = QuantumModel(; parms...)
+preds = predict(
+    model;
+    joint_func = get_joint_probs,
+    n_way
+)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">6-element Vector{Vector{Float64}}:
+ [0.29999999999999993, 0.19999999999999998, 0.1, 0.4]
+ [0.3296242254116391, 0.6244490954320945, 0.03005940175537921, 0.015867277400887215]
+ [0.33382612127177164, 0.5999011042230776, 0.06617387872822834, 9.889577692232744e-5]
+ [0.46750946842846075, 0.4865638524152729, 0.03249053157153925, 0.013436147584727174]
+ [0.3225948223531861, 0.6111324031416632, 0.043376094045810484, 0.02289668045934019]
+ [0.9335790596597751, 0.00014816583507435547, 0.02049426118395861, 0.04577851332119207]</code></pre><h2 id="Simulate-Model"><a class="docs-heading-anchor" href="#Simulate-Model">Simulate Model</a><a id="Simulate-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Simulate-Model" title="Permalink"></a></h2><p>The code block below demonstrates how to generate simulated data from the model using <code>rand</code>. In the example, we will generate 100 simulated trials for each condition. </p><pre><code class="language-julia hljs">using QuantumContextEffectModels
+n_way = 2
+n_trials = 100
+parms = (
+    Ψ = sqrt.([.3,.1,.2,.4]),
+    θli = .3,
+    θpb = .3,
+)
+
+model = QuantumModel(; parms...)
+data = rand(model, n_trials; n_way)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">6-element Vector{Vector{Vector{Int64}}}:
+ [[29, 20, 13, 38], [26, 25, 8, 41]]
+ [[37, 62, 0, 1], [13, 33, 32, 22]]
+ [[38, 58, 4, 0], [32, 60, 8, 0]]
+ [[44, 50, 4, 2], [48, 47, 4, 1]]
+ [[37, 58, 3, 2], [22, 32, 33, 13]]
+ [[97, 0, 1, 2], [97, 0, 0, 3]]</code></pre><h2 id="Labeled-Tables"><a class="docs-heading-anchor" href="#Labeled-Tables">Labeled Tables</a><a id="Labeled-Tables-1"></a><a class="docs-heading-anchor-permalink" href="#Labeled-Tables" title="Permalink"></a></h2><p>Interpreting the large number of nested arrays can be challenging. In the model illustrated here, there are 12 two-way tables embedded within the nested arrays. We can use <code>to_table</code> to assign labels to aid in the intepretation. In the code block below, we define two variables: <code>var_names</code>, which is the name of the attributes, and <code>values</code> which are the corresponding values for each attribute. To ensure the tables are labeled correctly, it is necessary to use the same order of attributes and values defined in <code>make_projectors</code>. </p><p>There are 12 tables in the full set. For ease of presentation, we will focus on the first two sets. The first set contains two tables for attributes <em>believable</em> and <em>informative</em>–-one for each order. The predictions are the same for each order because <em>believable</em> and <em>informative</em> are compatible. For example, </p><p class="math-container">\[\Pr(B = -1 \cap I = 1) = \Pr(I = 1 \cap B = -1) = .20,\]</p><p>where 1 corresponds to yes and -1 correspond to no. </p><pre><code class="language-julia hljs">using QuantumContextEffectModels
 n_way = 2
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
@@ -11,101 +67,75 @@ model = QuantumModel(; parms...)
 preds = predict(model; n_way)
 
 var_names = [
-    :B,
-    :I,
-    :P,
-    :L
+    :B, # believable
+    :I, # informative
+    :P, # persuasive
+    :L  # likable
 ]
 values = fill([:yes,:no], 4)
 
-df = to_tables(preds, var_names, values, n_way)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">6-element Vector{Vector{DataFrames.DataFrame}}:
- [<span class="sgr1">4×6 DataFrame
+df = to_tables(preds, var_names, values, n_way)
+df[1]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{DataFrames.DataFrame}:
+ <span class="sgr1">4×6 DataFrame
  Row │ group  order  attributes  values        val_idx  preds
      │<span class="sgr90"> Int64  Int64  Array…      Array…        Int64    Float64
 ─────┼──────────────────────────────────────────────────────────
    1 │     1      1  [:B, :I]    [:yes, :yes]        1      0.3
    2 │     1      1  [:B, :I]    [:no, :yes]         2      0.2
    3 │     1      1  [:B, :I]    [:yes, :no]         3      0.1
-   4 │     1      1  [:B, :I]    [:no, :no]          4      0.4, 4×6 DataFrame
+   4 │     1      1  [:B, :I]    [:no, :no]          4      0.4
+ 4×6 DataFrame
  Row │ group  order  attributes  values        val_idx  preds
      │ Int64  Int64  Array…      Array…        Int64    Float64
 ─────┼──────────────────────────────────────────────────────────
    1 │     1      2  [:I, :B]    [:yes, :yes]        1      0.3
    2 │     1      2  [:I, :B]    [:yes, :no]         2      0.2
    3 │     1      2  [:I, :B]    [:no, :yes]         3      0.1
-   4 │     1      2  [:I, :B]    [:no, :no]          4      0.4]
- [4×6 DataFrame
+   4 │     1      2  [:I, :B]    [:no, :no]          4      0.4</span></span></code></pre><p>The code block below shows the second set for <em>believable</em> and <em>persuasive</em>. Again, there is a <span>$2 \times 2$</span> table for each order. However, in this case, the <span>$2 \times 2$</span> tables are different because <em>believable</em> and <em>persuasive</em> are incompatible, resulting in order effects. For example, </p><p class="math-container">\[\Pr(B = -1 \cap P = 1) \ne \Pr(P = 1 \cap B = -1).\]</p><pre><code class="language-julia hljs">df[2]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2-element Vector{DataFrames.DataFrame}:
+ <span class="sgr1">4×6 DataFrame
  Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
+     │<span class="sgr90"> Int64  Int64  Array…      Array…        Int64    Float64
 ─────┼────────────────────────────────────────────────────────────
    1 │     2      1  [:B, :P]    [:yes, :yes]        1  0.329624
    2 │     2      1  [:B, :P]    [:no, :yes]         2  0.624449
    3 │     2      1  [:B, :P]    [:yes, :no]         3  0.0300594
-   4 │     2      1  [:B, :P]    [:no, :no]          4  0.0158673, 4×6 DataFrame
+   4 │     2      1  [:B, :P]    [:no, :no]          4  0.0158673
+ 4×6 DataFrame
  Row │ group  order  attributes  values        val_idx  preds
      │ Int64  Int64  Array…      Array…        Int64    Float64
 ─────┼───────────────────────────────────────────────────────────
    1 │     2      2  [:P, :B]    [:yes, :yes]        1  0.138197
    2 │     2      2  [:P, :B]    [:yes, :no]         2  0.392705
    3 │     2      2  [:P, :B]    [:no, :yes]         3  0.261803
-   4 │     2      2  [:P, :B]    [:no, :no]          4  0.207295]
- [4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼─────────────────────────────────────────────────────────────
-   1 │     3      1  [:B, :L]    [:yes, :yes]        1  0.333826
-   2 │     3      1  [:B, :L]    [:no, :yes]         2  0.599901
-   3 │     3      1  [:B, :L]    [:yes, :no]         3  0.0661739
-   4 │     3      1  [:B, :L]    [:no, :no]          4  9.88958e-5, 4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼─────────────────────────────────────────────────────────────
-   1 │     3      2  [:L, :B]    [:yes, :yes]        1  0.333826
-   2 │     3      2  [:L, :B]    [:yes, :no]         2  0.599901
-   3 │     3      2  [:L, :B]    [:no, :yes]         3  0.0661739
-   4 │     3      2  [:L, :B]    [:no, :no]          4  9.88958e-5]
- [4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼────────────────────────────────────────────────────────────
-   1 │     4      1  [:I, :P]    [:yes, :yes]        1  0.467509
-   2 │     4      1  [:I, :P]    [:no, :yes]         2  0.486564
-   3 │     4      1  [:I, :P]    [:yes, :no]         3  0.0324905
-   4 │     4      1  [:I, :P]    [:no, :no]          4  0.0134361, 4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼────────────────────────────────────────────────────────────
-   1 │     4      2  [:P, :I]    [:yes, :yes]        1  0.467509
-   2 │     4      2  [:P, :I]    [:yes, :no]         2  0.486564
-   3 │     4      2  [:P, :I]    [:no, :yes]         3  0.0324905
-   4 │     4      2  [:P, :I]    [:no, :no]          4  0.0134361]
- [4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼────────────────────────────────────────────────────────────
-   1 │     5      1  [:I, :L]    [:yes, :yes]        1  0.322595
-   2 │     5      1  [:I, :L]    [:no, :yes]         2  0.611132
-   3 │     5      1  [:I, :L]    [:yes, :no]         3  0.0433761
-   4 │     5      1  [:I, :L]    [:no, :no]          4  0.0228967, 4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼───────────────────────────────────────────────────────────
-   1 │     5      2  [:L, :I]    [:yes, :yes]        1  0.172746
-   2 │     5      2  [:L, :I]    [:yes, :no]         2  0.327254
-   3 │     5      2  [:L, :I]    [:no, :yes]         3  0.327254
-   4 │     5      2  [:L, :I]    [:no, :no]          4  0.172746]
- [4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼──────────────────────────────────────────────────────────────
-   1 │     6      1  [:P, :L]    [:yes, :yes]        1  0.933579
-   2 │     6      1  [:P, :L]    [:no, :yes]         2  0.000148166
-   3 │     6      1  [:P, :L]    [:yes, :no]         3  0.0204943
-   4 │     6      1  [:P, :L]    [:no, :no]          4  0.0457785, 4×6 DataFrame
- Row │ group  order  attributes  values        val_idx  preds
-     │ Int64  Int64  Array…      Array…        Int64    Float64
-─────┼──────────────────────────────────────────────────────────────
-   1 │     6      2  [:L, :P]    [:yes, :yes]        1  0.933579
-   2 │     6      2  [:L, :P]    [:yes, :no]         2  0.000148166
-   3 │     6      2  [:L, :P]    [:no, :yes]         3  0.0204943
-   4 │     6      2  [:L, :P]    [:no, :no]          4  0.0457785]</span></span></code></pre><h1 id="Simulate-Model"><a class="docs-heading-anchor" href="#Simulate-Model">Simulate Model</a><a id="Simulate-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Simulate-Model" title="Permalink"></a></h1><p>The code block below demonstrates how to generate simulated data from the model using <code>rand</code>. In the example, we will generate 100 simulated trials for each condition. </p><pre><code class="language-julia hljs">using QuantumContextEffectModels</code></pre><h1 id="Evaluate-Log-Likelihood"><a class="docs-heading-anchor" href="#Evaluate-Log-Likelihood">Evaluate Log Likelihood</a><a id="Evaluate-Log-Likelihood-1"></a><a class="docs-heading-anchor-permalink" href="#Evaluate-Log-Likelihood" title="Permalink"></a></h1><p>The log likelihood of data can be evaluated using <code>logpdf</code>. In the code block below, we generate simulated data and evaluate the logpdf: </p><pre><code class="language-julia hljs">using QuantumContextEffectModels</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../developing_a_model/">Developing a Model »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Thursday 8 February 2024 17:33">Thursday 8 February 2024</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+   4 │     2      2  [:P, :B]    [:no, :no]          4  0.207295</span></span></code></pre><h2 id="DataFrame"><a class="docs-heading-anchor" href="#DataFrame">DataFrame</a><a id="DataFrame-1"></a><a class="docs-heading-anchor-permalink" href="#DataFrame" title="Permalink"></a></h2><p>In many cases, the use of a flat data structure can facilitate data analysis and plotting. The function <code>to_dataframe</code> converts a nested array into a flat <code>DataFrame</code> object. Similar to the function <code>to_tables</code>, <code>to_dataframe</code> requires attribute names and attribute values, which are specified in the same order as the projectors in <code>make_projectors</code>. </p><pre><code class="language-julia hljs">using QuantumContextEffectModels
+n_way = 2
+parms = (
+    Ψ = sqrt.([.3,.1,.2,.4]),
+    θli = .3,
+    θpb = .3,
+)
+
+model = QuantumModel(; parms...)
+preds = predict(model; n_way)
+
+var_names = [
+    :B, # believable
+    :I, # informative
+    :P, # persuasive
+    :L  # likable
+]
+values = fill([:yes,:no], 4)
+
+df = to_dataframe(preds, var_names, values, n_way)
+first(df, 8)</code></pre><div><div style = "float: left;"><span>8×6 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "header"><th class = "rowNumber" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">group</th><th style = "text-align: left;">order</th><th style = "text-align: left;">attributes</th><th style = "text-align: left;">values</th><th style = "text-align: left;">val_idx</th><th style = "text-align: left;">preds</th></tr><tr class = "subheader headerLastRow"><th class = "rowNumber" style = "font-weight: bold; text-align: right;"></th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Vector{Symbol}" style = "text-align: left;">Array…</th><th title = "Vector{Symbol}" style = "text-align: left;">Array…</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Float64" style = "text-align: left;">Float64</th></tr></thead><tbody><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: left;">[:B, :I]</td><td style = "text-align: left;">[:yes, :yes]</td><td style = "text-align: right;">1</td><td style = "text-align: right;">0.3</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: left;">[:B, :I]</td><td style = "text-align: left;">[:no, :yes]</td><td style = "text-align: right;">2</td><td style = "text-align: right;">0.2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">3</td><td style = "text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: left;">[:B, :I]</td><td style = "text-align: left;">[:yes, :no]</td><td style = "text-align: right;">3</td><td style = "text-align: right;">0.1</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">4</td><td style = "text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: left;">[:B, :I]</td><td style = "text-align: left;">[:no, :no]</td><td style = "text-align: right;">4</td><td style = "text-align: right;">0.4</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">5</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: left;">[:I, :B]</td><td style = "text-align: left;">[:yes, :yes]</td><td style = "text-align: right;">1</td><td style = "text-align: right;">0.3</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">6</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: left;">[:I, :B]</td><td style = "text-align: left;">[:yes, :no]</td><td style = "text-align: right;">2</td><td style = "text-align: right;">0.2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">7</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: left;">[:I, :B]</td><td style = "text-align: left;">[:no, :yes]</td><td style = "text-align: right;">3</td><td style = "text-align: right;">0.1</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">8</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: left;">[:I, :B]</td><td style = "text-align: left;">[:no, :no]</td><td style = "text-align: right;">4</td><td style = "text-align: right;">0.4</td></tr></tbody></table></div><h2 id="Evaluate-Log-Likelihood"><a class="docs-heading-anchor" href="#Evaluate-Log-Likelihood">Evaluate Log Likelihood</a><a id="Evaluate-Log-Likelihood-1"></a><a class="docs-heading-anchor-permalink" href="#Evaluate-Log-Likelihood" title="Permalink"></a></h2><p>The log likelihood of data can be evaluated using <code>logpdf</code>. In the code block below, we generate simulated data and evaluate the logpdf: </p><pre><code class="language-julia hljs">using QuantumContextEffectModels
+n_way = 2
+n_trials = 100
+parms = (
+    Ψ = sqrt.([.3,.1,.2,.4]),
+    θli = .3,
+    θpb = .3,
+)
+
+model = QuantumModel(; parms...)
+data = rand(model, n_trials; n_way)
+logpdf(model, data, n_trials; n_way)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">-72.92406109041002</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../developing_a_model/">Developing a Model »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Saturday 10 February 2024 14:58">Saturday 10 February 2024</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
