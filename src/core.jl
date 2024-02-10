@@ -1,6 +1,8 @@
 abstract type AbstractQuantumModel{T} end 
 
-function make_projectors(model::AbstractQuantumModel) end
+function make_projectors(model::AbstractQuantumModel) 
+    error("A method for `make_projectors` is not defined for $(typeof(model))")
+end
 
 """
     predict(
@@ -9,8 +11,10 @@ function make_projectors(model::AbstractQuantumModel) end
         joint_func = get_ordered_joint_probs
     )
 
-Computes response probabilities for six two-way joint probability tables.
-
+Computes response probabilities all possible `n_way` joint probability tables. If `get_ordered_joint_probs`
+is assigned to `joint_func`, all orders within each `n_way` table is included. If `get_joint_probs` is assigned to
+`joint_func`, the output will include only one order perh `n_way` joint probability table. The order used is based 
+on the projectors defined in `make_projectors`.
 
 # Arguments
 
@@ -22,34 +26,6 @@ Computes response probabilities for six two-way joint probability tables.
 - `joint_func=get_ordered_joint_probs`: joint probability function. The function `get_ordered_joint_probs` returns 
 all possible orders where as the function `get_joint_probs` returns joint probabilities in the order specified in 
 `make_projectors`.
-
-# Returns  
-
-This function returns a vector of vectors where each sub-vector represents the two-way joint probability 
-table for binary (yes,no) responses. Each sub-vector corresponds to the following response combinations:
-
-- `yes, yes`
-- `yes, no`
-- `no, yes`
-- `no, no`
-
-Assuming 4 binary variables, the tables will correspond to the following two-way tables:
-```julia 
-variables = [
-    :believable,
-    :informative,
-    :persuasive,
-    :likeable
-]
-combs = combinations(variables, 2) |> collect
-# output
-[:believable, :informative]
-[:believable, :persuasive]
-[:believable, :likeable]
-[:informative, :persuasive]
-[:informative, :likeable]
-[:persuasive, :likeable]
-```
 """
 function predict(
         model::AbstractQuantumModel; 
@@ -66,7 +42,7 @@ function predict(
 end
 
 """
-    U(θ)
+    𝕦(θ)
 
 Generates a 2 × 2 unitary transition matrix by rotating the standard basis.
 
@@ -74,7 +50,7 @@ Generates a 2 × 2 unitary transition matrix by rotating the standard basis.
 
 - `θ`: rotation factor where θ ∈ [-1,1]
 """
-U(θ) = [
+𝕦(θ) = [
     cos(π * θ) -sin(π * θ);
     sin(π * θ) cos(π * θ)
 ]
@@ -163,16 +139,16 @@ const ⊗(x, y) = kron(x, y)
         n_way
     )
 
-Simulates `n_trials` of judgements per condition for all possible ordered pairs of size `n_way`.
+Simulates `n_trials` of judgements per condition for all possible ordered collections of size `n_way`.
 
 # Arguments
 
-- `model::AbstractQuantumModel`:an abstract quantum model object
-- `projectors`: a vector of projectors 
+- `dist::AbstractQuantumModel`:an abstract quantum model object
+- `n_trials::Int`: number of trials per condition 
 
 # Keywords 
 
-- `joint_func=get_ordered_joint_probs`: joint probability function. The function `get_ordered_joint_probs` returns 
+- `joint_func = get_ordered_joint_probs`: joint probability function. The function `get_ordered_joint_probs` returns 
 all possible orders where as the function `get_joint_probs` returns joint probabilities in the order specified in 
 `make_projectors`.
 - `n_way`: the number of attributes simultaneously judged, forming an n_way-table. 
@@ -199,6 +175,27 @@ function rand(dist::AbstractQuantumModel, n_trials::Int, n_reps::Int)
     return map(_ -> rand(dist, n_trials), 1:n_reps)
 end
 
+"""
+    logpdf(
+        dist::AbstractQuantumModel,
+        data::Vector{Vector{Vector{Int}}},
+        n_trials::Int;
+        n_way
+    )
+
+
+Evaluates the log likelihood of all judgements per condition for all possible ordered collections of size `n_way`.
+
+# Arguments
+
+- `dist::AbstractQuantumModel`:an abstract quantum model object
+- `data::Vector{Vector{Vector{Int}}}`: frequencies of yes responses for all `n_way` tables and orders
+- `n_trials::Int`: number of trials per condition 
+
+# Keywords 
+
+- `n_way`: the number of attributes simultaneously judged, forming an n_way-table. 
+"""
 function logpdf(
         dist::AbstractQuantumModel,
         data::Vector{Vector{Vector{Int}}},
@@ -214,6 +211,27 @@ function logpdf(
     return sum(_logpdf(n_trials, data, preds))
 end
 
+"""
+    logpdf(
+        dist::AbstractQuantumModel,
+        data::Vector{Vector{Int}},
+        n_trials::Int;
+        n_way
+    )
+
+
+Evaluates log likelihood of all judgements for all possible sets of size `n_way`.
+
+# Arguments
+
+- `dist::AbstractQuantumModel`:an abstract quantum model object
+- `data::Vector{Vector{Int}}`: frequencies of yes responses for all `n_way` tables (excluding order)
+- `n_trials::Int`: number of trials per condition 
+
+# Keywords 
+
+- `n_way`: the number of attributes simultaneously judged, forming an n_way-table. 
+"""
 function logpdf(
         dist::AbstractQuantumModel,
         data::Vector{Vector{Int}},

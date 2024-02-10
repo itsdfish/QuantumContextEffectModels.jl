@@ -3,7 +3,7 @@
 
 # QuantumContextEffectModels.jl
 
-This package contains code for a quantum cognition model of order effects in medical diagonsis.
+This package provides a framework for creating quantum models of context effects.
 
 ## Installation
 

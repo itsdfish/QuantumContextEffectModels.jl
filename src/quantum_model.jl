@@ -7,6 +7,12 @@
 - `θli::T`: parameter for rotating basis from `likable` to `informative`. `θli ∈ [-1,1]`
 - `θpb::T`:  parameter for rotating basis from `persuasive` to `believable`. `θli ∈ [-1,1]`
 
+# Constructors 
+
+    QuantumModel( Ψ, θli, θpb)
+    
+    QuantumModel(; Ψ, θli, θpb)
+
 # Reference
 
 Busemeyer, J. R., & Wang, Z. (2018). Hilbert space multidimensional theory. Psychological Review, 125(4), 572.
@@ -47,8 +53,8 @@ function make_projectors(model::QuantumModel)
     # 2D projector for responding "yes"
     My = [1 0; 0 0]
     # unitary transformation matrices
-    Upb = U(θpb)
-    Uli = U(θli)
+    Upb = 𝕦(θpb)
+    Uli = 𝕦(θli)
 
     # projector for responding "yes" to believable
     Pb = My ⊗ I(2)

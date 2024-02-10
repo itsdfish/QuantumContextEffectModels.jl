@@ -66,17 +66,17 @@ end
 
 @safetestset "unitary transformation" begin 
     using QuantumContextEffectModels
-    using QuantumContextEffectModels: U
+    using QuantumContextEffectModels: 𝕦
     using Test
 
-    m = U(.5)
+    m = 𝕦(.5)
     @test m ≈ [0 -1; 1 0]
 
-    m = U(-.5)
+    m = 𝕦(-.5)
     @test m ≈ [0 1; -1 0]
 end
 
-@safetestset "unitary transformation" begin 
+@safetestset "get_joint_prob" begin 
     using QuantumContextEffectModels
     using QuantumContextEffectModels: get_joint_prob
     using Test

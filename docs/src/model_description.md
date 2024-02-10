@@ -18,13 +18,16 @@ The procedure for the other condition is identical except the order of the infor
 2. update the probability of disease after the laboratory test $S_j$ provides negative evidence for the disease
 3. update the probability of disease after the medical history $S_i$ provides positive evidence for the disease
 
-# Order Effect 
+# Context Effects
 
-An order effect occurs when the final probability judgment of disease depends on the order in which evidence is presented. An order effect for two sources of evidence can be stated formally as: 
+ Broadly speaking, a context effect occurs when set of judgments cannot be deduced from a single underlying joint probability distribution. There are several ways this may manifest. One way is a violation of marginal invariance, which occurs when the marginal probability of an event cannot be computed by summing the joint probabilities comprising the event. For example, judgments about four attributes are represented as the following four random variables: $\{V_1, V_2, V_3, V_4 \}$. Suppose subjects judge a subset of two attributes $\{V_1, V_2 \}$ from a set of four attributes. Marginal invariance requires that the probability  judgment for attribute 1 is $V_1=v_1$ and judgment for attribute 2 is $V_2=v_2$ can be found by marginalizing over the other two judgments $\{V_3,V_4\}$, as follows:
 
-$\Pr(D=d \mid S_i=s_i, S_j=s_j) \ne \Pr(D=d \mid S_j=s_j, S_i=s_i),$
+$\Pr(V_1=v_1 \cap V_2=v_2) = \sum_{x_3 \in X_3} \sum_{x_4 \in X_4}\Pr(V_1=v_1 \cap V_2=v_2 \cap V_3=x_3 \cap V_4=x_4)$
 
-where $s_i,s_j \in \{1,-1\}$ and 1 denotes positive evidence for the disease and -1 denotes negative evidence for the disease. Order effects are challenging to explain with classical probability models because evidence is assumed to be commutative (i.e., invariant to order). One workaround for classical probability is to augment the sample space with an additional event representing evidence order. However, augmenting the sample space comes at the cost of creating additional parameters which need to be specified and justified, or estimated from limited data.
+where $X_3$ and $X_4$ are all possible values for $V_3$ and $V_4$. An order effect occurs when the final probability judgment of disease depends on the order in which evidence is presented. An order effect for two sources of evidence can be stated formally as: 
+
+$\Pr(V_1 = v_1 \cap V_2 = v_2) = \Pr(V_2 = v_2 \cap V_1 = v_1)$
+
 
 # Quantum Order Effect Model 
 

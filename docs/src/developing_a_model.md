@@ -18,7 +18,6 @@ A quamtum model for compatible events represents beliefs in an attribute space w
 - Believable and Perusaive
 - Informative and Likable
 
-
 ## Create Model Subtype
 
 The first step in developing a new model is to create a new subtype of `AbstractQuantumModel`. Any subtype of `AbstractQuantumModel` will be compatible with default internal functions used to compute predictions, simulate data, and evaluate the loglikelihood of data with respect to the model. 
