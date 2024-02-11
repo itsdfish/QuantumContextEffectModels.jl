@@ -16,7 +16,6 @@ function Base.show(io::IO, ::MIME"text/plain", model::AbstractQuantumModel)
     )
 end
 
-
 """
     to_dataframe(
         data::Vector{Vector{Vector{Float64}}},

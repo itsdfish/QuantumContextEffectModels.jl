@@ -15,7 +15,7 @@ using QuantumContextEffectModels
 n_way = 2
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
 
@@ -50,7 +50,7 @@ using QuantumContextEffectModels
 n_way = 2
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
 
@@ -72,7 +72,7 @@ n_way = 2
 n_trials = 100
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
 
@@ -95,7 +95,7 @@ using QuantumContextEffectModels
 n_way = 2
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
 
@@ -129,7 +129,7 @@ using QuantumContextEffectModels
 n_way = 2
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
 
@@ -157,7 +157,7 @@ n_way = 2
 n_trials = 100
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
 

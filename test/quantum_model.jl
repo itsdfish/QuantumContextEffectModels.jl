@@ -11,7 +11,7 @@
         for _ ∈ 1:10 
             parms = (
                 Ψ = sqrt.(rand(dist)),
-                θli = rand(Uniform(-1, 1)),
+                θil = rand(Uniform(-1, 1)),
                 θpb = rand(Uniform(-1, 1)),
             )
             
@@ -47,7 +47,7 @@
 
         parms = (
             Ψ = sqrt.([.25,.25,.3,.2]),
-            θli = -.2,
+            θil = -.2,
             θpb = .1,
         )
 
@@ -94,7 +94,7 @@ end
     Ψ = sqrt.([.3,.5,.1,.1])
     parms = (
         Ψ,
-        θli = -.2,
+        θil = -.2,
         θpb = .1,
     )
     model = QuantumModel(; parms...)
@@ -112,7 +112,7 @@ end
 
     parms = (
         Ψ = sqrt.([.3,.1,.2,.4]),
-        θli = .3,
+        θil = .3,
         θpb = .3,
     )
     
@@ -142,10 +142,10 @@ end
         Random.seed!(5774)
 
         Ψ = sqrt.([.3,.1,.2,.4])
-        θli = .3
+        θil = .3
         θpb = .3
 
-        parms = (;Ψ, θli, θpb)
+        parms = (;Ψ, θil, θpb)
 
         n_trials = 10_000
         model = QuantumModel(; parms...)
@@ -156,15 +156,15 @@ end
             joint_func = get_joint_probs
         )
         
-        θlis = range(.8 * θli, 1.2 * θli, length=100)
-        LLs = map(θli -> logpdf(QuantumModel(; parms..., θli), data, n_trials; n_way=2), θlis)
+        θils = range(.8 * θil, 1.2 * θil, length=100)
+        LLs = map(θil -> logpdf(QuantumModel(; parms..., θil), data, n_trials; n_way=2), θils)
         _,idx = findmax(LLs)
-        @test θlis[idx] ≈ θli atol = 1e-2
+        @test θils[idx] ≈ θil atol = 1e-2
 
         θpbs = range(.8 * θpb, 1.2 * θpb, length=100)
         LLs = map(θpb -> logpdf(QuantumModel(; parms..., θpb), data, n_trials; n_way=2), θpbs)
         _,idx = findmax(LLs)
-        @test θlis[idx] ≈ θli atol = 1e-2
+        @test θils[idx] ≈ θil atol = 1e-2
     end
 
     @safetestset "order" begin 
@@ -175,23 +175,23 @@ end
         Random.seed!(5774)
         
         Ψ = sqrt.([.3,.1,.2,.4])
-        θli = .3
+        θil = .3
         θpb = .3
 
-        parms = (;Ψ, θli, θpb)
+        parms = (;Ψ, θil, θpb)
 
         n_trials = 10_000
         model = QuantumModel(; parms...)
         data = rand(model, n_trials; n_way=2)
         
-        θlis = range(.8 * θli, 1.2 * θli, length=100)
-        LLs = map(θli -> logpdf(QuantumModel(; parms..., θli), data, n_trials; n_way=2), θlis)
+        θils = range(.8 * θil, 1.2 * θil, length=100)
+        LLs = map(θil -> logpdf(QuantumModel(; parms..., θil), data, n_trials; n_way=2), θils)
         _,idx = findmax(LLs)
-        @test θlis[idx] ≈ θli atol = 1e-2
+        @test θils[idx] ≈ θil atol = 1e-2
 
         θpbs = range(.8 * θpb, 1.2 * θpb, length=100)
         LLs = map(θpb -> logpdf(QuantumModel(; parms..., θpb), data, n_trials; n_way=2), θpbs)
         _,idx = findmax(LLs)
-        @test θlis[idx] ≈ θli atol = 1e-2
+        @test θils[idx] ≈ θil atol = 1e-2
     end
 end

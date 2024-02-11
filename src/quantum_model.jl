@@ -4,14 +4,14 @@
 # Fields 
 
 - `Ψ::Vector{T}`: initial state vector 
-- `θli::T`: parameter for rotating basis from `likable` to `informative`. `θli ∈ [-1,1]`
-- `θpb::T`:  parameter for rotating basis from `persuasive` to `believable`. `θli ∈ [-1,1]`
+- `θil::T`: parameter for rotating basis from `informative` to `likable`. `θil ∈ [-1,1]`
+- `θpb::T`:  parameter for rotating basis from `believable` to `persuasive`. `θpb ∈ [-1,1]`
 
 # Constructors 
 
-    QuantumModel( Ψ, θli, θpb)
+    QuantumModel( Ψ, θil, θpb)
     
-    QuantumModel(; Ψ, θli, θpb)
+    QuantumModel(; Ψ, θil, θpb)
 
 # Reference
 
@@ -19,14 +19,14 @@ Busemeyer, J. R., & Wang, Z. (2018). Hilbert space multidimensional theory. Psyc
 """
 mutable struct QuantumModel{T<:Real} <: AbstractQuantumModel{T}
     Ψ::Vector{T}
-    θli::T 
+    θil::T 
     θpb::T 
 end
 
-function QuantumModel(; Ψ, θli, θpb)
-    _,θli,θpb = promote(Ψ[1], θli, θpb)
+function QuantumModel(; Ψ, θil, θpb)
+    _,θil,θpb = promote(Ψ[1], θil, θpb)
     Ψ = convert(Vector{typeof(θpb)}, Ψ)
-    return QuantumModel(Ψ, θli, θpb)
+    return QuantumModel(Ψ, θil, θpb)
 end
 
 """
@@ -42,19 +42,19 @@ Returns projectors for each value of each variable.
 
 - `projectors::Vector{Vector{Float64}}`: a nested vector of projectors 
 
-For this model, there are four variables (believable,infromative,persuasive,likable) with binary values (yes, no).
-The projectors organized as follows `[[Pby Pbn],[Piy Pin],[Ppy Ppn],[Ply Pln]]`, where the first index corresponds
+For this model, there are four variables corresponding to believable, infromative, persuasive, and likable
+which have binary values (e.g., yes, no). The projectors organized as follows `[[Pby Pbn],[Piy Pin],[Ppy Ppn],[Ply Pln]]`, where the first index corresponds
 to the variable and the second index correspons to the binary value. For example, `Pbn`,
 is the projector for responding "no" to the question about believable. 
 """
 function make_projectors(model::QuantumModel)
-    (;θli, θpb) = model
+    (;θil, θpb) = model
 
     # 2D projector for responding "yes"
     My = [1 0; 0 0]
     # unitary transformation matrices
     Upb = 𝕦(θpb)
-    Uli = 𝕦(θli)
+    Uil = 𝕦(θil)
 
     # projector for responding "yes" to believable
     Pb = My ⊗ I(2)
@@ -63,7 +63,7 @@ function make_projectors(model::QuantumModel)
     # projector for responding "yes" to persuasive    
     Pp = (Upb * My * Upb') ⊗ I(2)
     # projector for responding "yes" to likable    
-    Pl = I(2) ⊗ (Uli * My * Uli')
+    Pl = I(2) ⊗ (Uil * My * Uil')
     
     projectors = [
         [Pb,I(4)-Pb],

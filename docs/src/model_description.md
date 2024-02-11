@@ -4,32 +4,36 @@
 
 Prior research has found that the judged likelihood of a hypothesis often depends on the order in which evidence is presented. In other words, the final judgment that a hypothesis is true is different for evidence sequence $S_i, S_j$ and evidence sequence $S_j, S_i$. The goal of this tutorial is to describe a quantum order effect model (QOEM) as it applies to a medical diagnosis task. The basic model can be adapted to other tasks in which evidence is evaluated sequentially.  
 
-# Medical Diagnosis Task
+# Attribute Judgment Task
 
-Medical doctors routinely perform medical diagnosis as part of their job requirements. Medical diagnosis is the process of assessing the probability a patient has a disease based on symptoms and medical tests. Below, we use the QOEM to understand a how a person evaluates the hypothesis that a fictitous patient has a disease (d) after evidence from two informatino sources are presented sequentially. The judgments are made in two conditions, which vary the presentation order of the evidence. In one condition, a person makes the following judgments:
+In the attribute judgment task, subjects make judgements about stimuli which vary along some dimensions (e.g., attractiveness, intelligence, friendliness etc.). Subjects might make simultaneous judgments about a subset of attributes. For example, attractiveness and friendliness is a subset, which forms a 2-way joint probability table. The collection of attributes judged together, including the order in which they are presented, constitutes a question context. That means *attractiveness and friendliness* and *friendliness and attractiveness* are different question contexts. The general question of interest is whether the judgments can be characterized by a single underlying joint probability distribution across all attributes. In other words, is it possible to deduce the judgments of subsets by marginalizing across non-judged attributes.
 
-1. the probability of disease based on initial symptoms 
-2. update the probability of disease after the medical history $S_i$ provides positive evidence for the disease
-3. update the probability of disease after the laboratory test $S_j$ provides negative evidence for the disease
-
-The procedure for the other condition is identical except the order of the information sources $S_i,S_j$ is reversed: 
-
-1. the probability of disease based on initial symptoms 
-2. update the probability of disease after the laboratory test $S_j$ provides negative evidence for the disease
-3. update the probability of disease after the medical history $S_i$ provides positive evidence for the disease
+In general, suppose there are $n_a$ attributes $[a_1, a_2, \dots, a_{n_a}]$ which can describe stimuli in a domain of interest. Each attribute $i$ has $k_i$ discrete values. Thus, in total, there are $\Pi_{i}^{n_a} k_i$ possible values. A subset of $1 \geq s \geq n_a$ attributes are measured at a time, forming s-way joint probability tables. Thus, there are $C(n_a,s)$ combinations of attributes of size $s$ and $P(n_a, s)$ permutations where order matters. Thus, there are $P(n_a, s)$ possible question contexts. 
 
 # Context Effects
 
- Broadly speaking, a context effect occurs when set of judgments cannot be deduced from a single underlying joint probability distribution. There are several ways this may manifest. One way is a violation of marginal invariance, which occurs when the marginal probability of an event cannot be computed by summing the joint probabilities comprising the event. For example, judgments about four attributes are represented as the following four random variables: $\{V_1, V_2, V_3, V_4 \}$. Suppose subjects judge a subset of two attributes $\{V_1, V_2 \}$ from a set of four attributes. Marginal invariance requires that the probability  judgment for attribute 1 is $V_1=v_1$ and judgment for attribute 2 is $V_2=v_2$ can be found by marginalizing over the other two judgments $\{V_3,V_4\}$, as follows:
+ Broadly speaking, a context effect occurs when set of judgments cannot be deduced from a single underlying joint probability distribution. There are several ways this may manifest. One way is a violation of marginal invariance, which occurs when the marginal probability of an event cannot be computed by summing the joint probabilities comprising the event. The other way a context effect may emerge is when the joint probability table depends on order in which $s$ attributes are presented. Suppose there are $n_a=4$ attributes corresponding to 
+ 
+ - believable
+ - informative
+ - persuasive
+ - likable
+
+## Marginal Invariance 
+
+ Define $\{V_1, V_2, V_3, V_4 \}$ as a set of random variables representing judgments of the four attributes. Suppose subjects judge a subset of $s=2$ attributes $\{V_1, V_2 \}$ from a set of four attributes. Marginal invariance requires that the probability judgment for attribute 1 is $V_1=v_1$ and judgment for attribute 2 is $V_2=v_2$ can be found by marginalizing over the other two judgments $\{V_3,V_4\}$, as follows:
 
 $\Pr(V_1=v_1 \cap V_2=v_2) = \sum_{x_3 \in X_3} \sum_{x_4 \in X_4}\Pr(V_1=v_1 \cap V_2=v_2 \cap V_3=x_3 \cap V_4=x_4)$
 
-where $X_3$ and $X_4$ are all possible values for $V_3$ and $V_4$. An order effect occurs when the final probability judgment of disease depends on the order in which evidence is presented. An order effect for two sources of evidence can be stated formally as: 
+where $X_3$ and $X_4$ are all possible values for $V_3$ and $V_4$.
+
+## Order Effect 
+
+An order effect occurs when the final probability judgment of disease depends on the order in which evidence is presented. An order effect for two sources of evidence can be stated formally as: 
 
 $\Pr(V_1 = v_1 \cap V_2 = v_2) = \Pr(V_2 = v_2 \cap V_1 = v_1)$
 
-
-# Quantum Order Effect Model 
+# Quantum Context Effect Model 
 
 According to the QOEM, evidence sources constitute *incompatible* events, meaning they cannot be considered simultaneously because the joint probability distribution is not defined. In particular, a person cannot represent the 8 dimensional joint distribution of events over disease status (present vs. absent), evidence type (positive vs. negative), and information source (medical history vs. laboratory test). Instead, incompatible events are represented in a lower 4 dimensional space using different bases, which must be evaluated sequentially. Bases correspond to different perspectives of a situation. In the medical diagnosis task, the QOEM assumes that medical history and laboratory tests are viewed one at a time from different perspectives. Order effects arise from this process because the linear algebra operations described below are non-commutative. 
 

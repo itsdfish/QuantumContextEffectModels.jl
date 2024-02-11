@@ -32,7 +32,7 @@ function predict(
         n_way, 
         joint_func = get_ordered_joint_probs
     )
-    (;Ψ, θli, θpb) = model
+    (;Ψ) = model
     # generate all projectors 
     projectors = make_projectors(model)
     # generate all combinations of projectors for 2-way tables 
@@ -220,7 +220,7 @@ end
     )
 
 
-Evaluates log likelihood of all judgements for all possible sets of size `n_way`.
+Evaluates the log likelihood of all judgements for all possible joint probability tables with `n_way` dimensionality.
 
 # Arguments
 

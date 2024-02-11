@@ -11,12 +11,11 @@ The model was developed by Busemeyer & Wang (2018) to explain context effects in
 - Persuasive
 - Likable 
 
-Subjects judged pairs of attributes rather than all four attributes simultanouesly. In total, there were $P(4,2) = 12$ permutations (e.g., [B,I],[I,B],[B,P], ...). Each pair forms a $2 \times 2$ table. A context effect is observed if the twelve $2 \times 2$ tables cannot be deduced from a single joint probability distribution across the four attributes. 
+Subjects judged pairs of attributes rather than all four attributes simultanouesly. In total, there were $P(4,2) = 12$ permutations (e.g., $[[B,I],[I,B],[B,P],[P,B], \dots]$), where each permutation constitutes a unique question context. Each pair forms a $2 \times 2$ table because each attribute assumes binary values. A context effect is observed if the twelve $2 \times 2$ tables cannot be deduced from a single joint probability distribution defined over the four attributes. 
 
-A quamtum model for compatible events represents beliefs in an attribute space with $2^4 = 16$ dimensions. This type of model does not produce context effects, and is formally equivalent to a classical probability model. However, when events are incompatible, their joint distribution is not defined. Instead, attributes are represented in a lower dimensional space in which different bases are used to describe incompatible events. Specifically, the basis for incompatible pairs are found by rotating the basis for compatible pairs. The following pairs are incompatible 
+If all attributes are compatible, the quantum model is formally equivalent to a classical model because all events can be represented by a single basis spanning all $2^4 = 16$ dimensions. As such, this model does not produce context effects. By contrast, if some attributes are incompatible, the joint distribution of the incompatible attributes is not defined. Instead, sets of incompatible attributes are represented in a lower dimensional space by different bases (and attributes within a set are compatible). Specifically, the basis for incompatible pairs are found by rotating the basis for compatible pairs. As a consequence, the model can produce context effects.
 
-- Believable and Perusaive
-- Informative and Likable
+In this model, *believable* and *informative* are compatible, meaning they are defined within a common basis. Similarly, *persuasive* and *likable* are compatible are defined within the same basis. The basis for attributes *persuasive* and *likable* are found by rotating the basis for *believable* and *informative*.
 
 ## Create Model Subtype
 
@@ -25,20 +24,21 @@ The first step in developing a new model is to create a new subtype of `Abstract
 The model object below contains six parameters: 
 
 -  $\Psi$: a $4 \times 1$ initial state vector consisting of four parameters
--  $\theta_{l,i} \in [-1,1]$: a rotation parameter to rotate the 
--  $\theta_{p,b} \in [-1,1]$: a rotation parameter to rotate the 
+-  $\theta_{i,l} \in [-1,1]$: a rotation parameter to rotate basis $i$ to basis $l$ 
+-  $\theta_{p,b} \in [-1,1]$: a rotation parameter to rotate basis $p$ to basis $b$
 
 ```julia 
 mutable struct QuantumModel{T<:Real} <: AbstractQuantumModel
     Ψ::Vector{T}
-    θli::T 
+    θil::T 
     θpb::T 
 end
 ```
+The API requires each subtype of `AbstractQuantumModel` to have a field for $\Psi$, but places no other contraints on the remaining fields. 
 
 ## Create Projector Generator
 
-The other step is to extend the function `make_projectors`, which, as its name implies, creates projectors. There are two basic steps for creating the projectors. First, we create projectors for responding *yes* to each of the binary attributes. For example, `Pb = My ⊗ I(2)` projects the superposition state onto the subspace corresponding to *believable*. Second, all possible projectors are enumerated and organized into a vector of vectors, where the subvectors correspond to all possible responses to a given attribute. In the case of binary attributes, each subvector is of length 2 and responding *no* is the complement of responding *yes*: $\mathbf{P}_n = I - \mathbf{P}_y$. The vector of projectors is organized accordingly:
+The other step is to extend the function `make_projectors`, which, as its name implies, creates projectors. There are two basic steps for creating the projectors. First, we create projectors for responding *yes* to each of the binary attributes. For example, the projector `Pb = My ⊗ I(2)` projects the superposition state onto the subspace corresponding to *believable*. Second, all possible projectors are enumerated and organized into a vector of vectors, where the subvectors correspond to all possible responses to a given attribute. In the case of binary attributes, each subvector is of length 2 and responding *no* is the complement of responding *yes*: $\mathbf{P}_n = I - \mathbf{P}_y$. The vector of projectors is organized accordingly:
 
 $[[\mathbf{P}_{b,y},\mathbf{P}_{b,n}],[\mathbf{P}_{i,y},\mathbf{P}_{i,n}],[\mathbf{P}_{p,y},\mathbf{P}_{p,n}],[\mathbf{P}_{l,y},\mathbf{P}_{l,n}]],$ 
 
@@ -46,13 +46,13 @@ where subscripts $b$, $i$, $p$ and $l$ correspond to attributes believable, info
 
 ```julia 
 function make_projectors(model::QuantumModel)
-    (;θli, θpb) = model
+    (;θil, θpb) = model
 
     # 2D projector for responding "yes"
     My = [1 0; 0 0]
     # unitary transformation matrices
-    Upb = U(θpb)
-    Uli = U(θli)
+    Upb = 𝕦(θpb)
+    Uil = 𝕦(θil)
 
     # projector for responding "yes" to believable
     Pb = My ⊗ I(2)
@@ -61,8 +61,8 @@ function make_projectors(model::QuantumModel)
     # projector for responding "yes" to persuasive    
     Pp = (Upb * My * Upb') ⊗ I(2)
     # projector for responding "yes" to likable    
-    Pl = I(2) ⊗ (Uli * My * Uli')
-
+    Pl = I(2) ⊗ (Uil * My * Uil')
+    
     projectors = [
         [Pb,I(4)-Pb],
         [Pi,I(4)-Pi],

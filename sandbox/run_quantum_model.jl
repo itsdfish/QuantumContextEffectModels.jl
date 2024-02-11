@@ -6,11 +6,11 @@ using QuantumContextEffectModels
 
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .6,
+    θil = .6,
     θpb = .6,
 )
 
-n_way = 3
+n_way = 2
 model = QuantumModel(; parms...)
 preds = predict(
     model; 

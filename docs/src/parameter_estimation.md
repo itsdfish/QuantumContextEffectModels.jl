@@ -11,22 +11,22 @@ using QuantumContextEffectModels
 using Plots 
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
-θlis = range(-1, 1, length=1001)
+θils = range(-1, 1, length=1001)
 preds = map(
-        θli -> predict(
-            QuantumModel(; parms..., θli); 
+        θil -> predict(
+            QuantumModel(; parms..., θil); 
             joint_func = get_joint_probs,
             n_way = 2
-        ), θlis)
+        ), θils)
 
 preds = map(p -> p[5], preds)
 
 preds = stack(preds)'
-p1 = plot(θlis[1:500], preds[1:500,:], leg=false, title="first half [-1,0)")
-p2 = plot(θlis[1:500], preds[501:end-1,:], leg=false, title="second half [0,1)")
+p1 = plot(θils[1:500], preds[1:500,:], leg=false, title="first half [-1,0)")
+p2 = plot(θils[1:500], preds[501:end-1,:], leg=false, title="second half [0,1)")
 plot(p1, p2, layout=(2,1))
 ```
 ```@raw html
@@ -54,7 +54,7 @@ n_trials = 25
 n_way = 2
 parms = (
     Ψ = sqrt.([.7,.1,.1,.1]),
-    θli = .6,
+    θil = .6,
     θpb = .3,
 )
 model = QuantumModel(; parms...)
@@ -67,9 +67,9 @@ The next step is to define a Turing model with the `@model` macro. We will estim
 
 ```julia 
 @model function turing_model(data, parms, n_trials; n_way)
-    θli ~ Uniform(0, 1)
+    θil ~ Uniform(0, 1)
     θpb ~ Uniform(0, 1)
-    model = QuantumModel(; parms..., θli, θpb)
+    model = QuantumModel(; parms..., θil, θpb)
     Turing.@addlogprob! logpdf(model, data, n_trials; n_way)
 end
 
@@ -84,7 +84,7 @@ pt = pigeons(
     target=TuringLogPotential(sampler), 
     record=[traces],
     multithreaded=true)
-samples = Chains(sample_array(pt), ["θli", "θbp", "LL"])
+samples = Chains(sample_array(pt), ["θil", "θbp", "LL"])
 plot(samples)
 ```
 
