@@ -4,23 +4,23 @@
 using Plots
 parms = (
     Ψ = sqrt.([.3,.1,.2,.4]),
-    θli = .3,
+    θil = .3,
     θpb = .3,
 )
-θlis = range(-1, 1, length=1001)
+θils = range(-1, 1, length=1001)
 preds = map(
-        θli -&gt; predict(
-            QuantumModel(; parms..., θli);
+        θil -&gt; predict(
+            QuantumModel(; parms..., θil);
             joint_func = get_joint_probs,
             n_way = 2
-        ), θlis)
+        ), θils)
 
 preds = map(p -&gt; p[5], preds)
 
 preds = stack(preds)&#39;
-p1 = plot(θlis[1:500], preds[1:500,:], leg=false, title=&quot;first half [-1,0)&quot;)
-p2 = plot(θlis[1:500], preds[501:end-1,:], leg=false, title=&quot;second half [0,1)&quot;)
-plot(p1, p2, layout=(2,1))</code></pre><img src="77ee6724.svg" alt="Example block output"/></details><h2 id="Load-Packages"><a class="docs-heading-anchor" href="#Load-Packages">Load Packages</a><a id="Load-Packages-1"></a><a class="docs-heading-anchor-permalink" href="#Load-Packages" title="Permalink"></a></h2><p>First, we will load the required packages below. </p><pre><code class="language-julia hljs">using Pigeons
+p1 = plot(θils[1:500], preds[1:500,:], leg=false, title=&quot;first half [-1,0)&quot;)
+p2 = plot(θils[1:500], preds[501:end-1,:], leg=false, title=&quot;second half [0,1)&quot;)
+plot(p1, p2, layout=(2,1))</code></pre><img src="60c598f9.svg" alt="Example block output"/></details><h2 id="Load-Packages"><a class="docs-heading-anchor" href="#Load-Packages">Load Packages</a><a id="Load-Packages-1"></a><a class="docs-heading-anchor-permalink" href="#Load-Packages" title="Permalink"></a></h2><p>First, we will load the required packages below. </p><pre><code class="language-julia hljs">using Pigeons
 using QuantumContextEffectModels
 using Random
 using StatsPlots
@@ -29,14 +29,14 @@ n_trials = 25
 n_way = 2
 parms = (
     Ψ = sqrt.([.7,.1,.1,.1]),
-    θli = .6,
+    θil = .6,
     θpb = .3,
 )
 model = QuantumModel(; parms...)
 data = rand(model, n_trials; n_way)</code></pre><h2 id="Define-Turing-Model"><a class="docs-heading-anchor" href="#Define-Turing-Model">Define Turing Model</a><a id="Define-Turing-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Turing-Model" title="Permalink"></a></h2><p>The next step is to define a Turing model with the <code>@model</code> macro. We will estimate the entanglement parameters using the prior <span>$\gamma_j \sim \mathrm{normal}(0,3)$</span>. The other parameters will be fixed to the data generating values defined in the code block above.</p><pre><code class="language-julia hljs">@model function turing_model(data, parms, n_trials; n_way)
-    θli ~ Uniform(0, 1)
+    θil ~ Uniform(0, 1)
     θpb ~ Uniform(0, 1)
-    model = QuantumModel(; parms..., θli, θpb)
+    model = QuantumModel(; parms..., θil, θpb)
     Turing.@addlogprob! logpdf(model, data, n_trials; n_way)
 end
 
@@ -44,7 +44,7 @@ sampler = turing_model(data, parms, n_trials; n_way)</code></pre><h2 id="Estimat
     target=TuringLogPotential(sampler), 
     record=[traces],
     multithreaded=true)
-samples = Chains(sample_array(pt), [&quot;θli&quot;, &quot;θbp&quot;, &quot;LL&quot;])
+samples = Chains(sample_array(pt), [&quot;θil&quot;, &quot;θbp&quot;, &quot;LL&quot;])
 plot(samples)</code></pre><pre><code class="language-julia hljs">chain = sample(sampler, NUTS(1000, .85), MCMCThreads(), 1000, 4)
 plot(chain)</code></pre><p>The trace of the <code>pigeon</code>&#39;s sampler is given below:</p><pre><code class="language-julia hljs">────────────────────────────────────────────────────────────────────────────
   scans        Λ      log(Z₁/Z₀)   min(α)     mean(α)    min(αₑ)   mean(αₑ) 
@@ -59,4 +59,4 @@ plot(chain)</code></pre><p>The trace of the <code>pigeon</code>&#39;s sampler is
       256       5.18        469      0.311      0.425      0.998          1 
       512       5.14        469      0.347      0.429      0.999          1 
  1.02e+03       5.14        469      0.398      0.429      0.998          1 
-────────────────────────────────────────────────────────────────────────────</code></pre><h2 id="Plot-Posterior-Distribution"><a class="docs-heading-anchor" href="#Plot-Posterior-Distribution">Plot Posterior Distribution</a><a id="Plot-Posterior-Distribution-1"></a><a class="docs-heading-anchor-permalink" href="#Plot-Posterior-Distribution" title="Permalink"></a></h2><p>Now we can plot the posterior distribution of <span>$\gamma$</span> with <code>plot</code>. The posterior distribution of <span>$\gamma$</span> has a primary mode around 1 and secondary modes around 2 and 3.5.</p><pre><code class="language-julia hljs">plot(samples)</code></pre><p><img src="../resources/posterior_gamma.png" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../model_description/">« Model Description</a><a class="docs-footer-nextpage" href="../api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Sunday 11 February 2024 09:40">Sunday 11 February 2024</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+────────────────────────────────────────────────────────────────────────────</code></pre><h2 id="Plot-Posterior-Distribution"><a class="docs-heading-anchor" href="#Plot-Posterior-Distribution">Plot Posterior Distribution</a><a id="Plot-Posterior-Distribution-1"></a><a class="docs-heading-anchor-permalink" href="#Plot-Posterior-Distribution" title="Permalink"></a></h2><p>Now we can plot the posterior distribution of <span>$\gamma$</span> with <code>plot</code>. The posterior distribution of <span>$\gamma$</span> has a primary mode around 1 and secondary modes around 2 and 3.5.</p><pre><code class="language-julia hljs">plot(samples)</code></pre><p><img src="../resources/posterior_gamma.png" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../model_description/">« Model Description</a><a class="docs-footer-nextpage" href="../api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Monday 12 February 2024 00:04">Monday 12 February 2024</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
