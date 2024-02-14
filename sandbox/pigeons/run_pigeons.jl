@@ -4,9 +4,7 @@
 cd(@__DIR__)
 using Pkg 
 Pkg.activate("../../docs")
-using Revise
 using Pigeons
-using Plots 
 using Random
 using Turing 
 using QuantumContextEffectModels
@@ -30,7 +28,9 @@ data = rand(model, n_trials; n_way)
     θil ~ Uniform(0, 1)
     θpb ~ Uniform(0, 1)
     model = QuantumModel(; parms..., θil, θpb)
-    Turing.@addlogprob! logpdf(model, data, n_trials; n_way)
+    if DynamicPPL.leafcontext(__context__) !== DynamicPPL.PriorContext()
+        Turing.@addlogprob! logpdf(model, data, n_trials; n_way)
+    end
 end
 
 sampler = turing_model(data, parms, n_trials; n_way)
