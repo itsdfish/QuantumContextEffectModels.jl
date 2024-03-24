@@ -6,13 +6,14 @@ using Pkg
 Pkg.activate("../../docs")
 using Pigeons
 using Random
+using StatsPlots
 using Turing 
 using QuantumContextEffectModels
 ####################################################################################
 #                                    generate data
 ####################################################################################
 Random.seed!(84)
-n_trials = 25
+n_trials = 100
 n_way = 2
 parms = (
     Ψ = sqrt.([.7,.1,.1,.1]),
