@@ -1,34 +1,30 @@
 cd(@__DIR__)
-using Pkg 
+using Pkg
 Pkg.activate("..")
 using Revise
 using QuantumContextEffectModels
 
 parms = (
-    Ψ = sqrt.([.3,.1,.2,.4]),
-    θil = .6,
-    θpb = .6,
+    Ψ = sqrt.([0.3, 0.1, 0.2, 0.4]),
+    θil = 0.6,
+    θpb = 0.6
 )
 
 n_way = 2
 model = QuantumModel(; parms...)
 preds = predict(
-    model; 
+    model;
     #joint_func = get_joint_probs,
     n_way
 )
 
-data = rand(model, 100; n_way=2)
-logpdf(model, data, 100; n_way=2)
+data = rand(model, 100; n_way = 2)
+logpdf(model, data, 100; n_way = 2)
 
-
-var_names = [:B,:I,:P,:L]
-values = fill([:yes,:no], 4)
+var_names = [:B, :I, :P, :L]
+values = fill([:yes, :no], 4)
 
 df = to_tables(preds, var_names, values, n_way)
-
-
-
 
 # parms = (
 #     Ψ = sqrt.([.3,.1,.2,.4]),
@@ -54,7 +50,7 @@ df = to_tables(preds, var_names, values, n_way)
 
 A = [0 2; -2 0]#[2 -1; 1 1]
 S = [1 0; 0 1]
-v = [1,1]
+v = [1, 1]
 vA = inv(A) * v
 inv(A) * S
 

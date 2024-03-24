@@ -17,14 +17,14 @@
 
 Busemeyer, J. R., & Wang, Z. (2018). Hilbert space multidimensional theory. Psychological Review, 125(4), 572.
 """
-mutable struct QuantumModel{T<:Real} <: AbstractQuantumModel{T}
+mutable struct QuantumModel{T <: Real} <: AbstractQuantumModel{T}
     Ψ::Vector{T}
-    θil::T 
-    θpb::T 
+    θil::T
+    θpb::T
 end
 
 function QuantumModel(; Ψ, θil, θpb)
-    _,θil,θpb = promote(Ψ[1], θil, θpb)
+    _, θil, θpb = promote(Ψ[1], θil, θpb)
     Ψ = convert(Vector{typeof(θpb)}, Ψ)
     return QuantumModel(Ψ, θil, θpb)
 end
@@ -48,7 +48,7 @@ to the variable and the second index correspons to the binary value. For example
 is the projector for responding "no" to the question about believable. 
 """
 function make_projectors(model::QuantumModel)
-    (;θil, θpb) = model
+    (; θil, θpb) = model
 
     # 2D projector for responding "yes"
     My = [1 0; 0 0]
@@ -64,12 +64,12 @@ function make_projectors(model::QuantumModel)
     Pp = (Upb * My * Upb') ⊗ I(2)
     # projector for responding "yes" to likable    
     Pl = I(2) ⊗ (Uil * My * Uil')
-    
+
     projectors = [
-        [Pb,I(4)-Pb],
-        [Pi,I(4)-Pi],
-        [Pp,I(4)-Pp],
-        [Pl,I(4)-Pl],
+        [Pb, I(4) - Pb],
+        [Pi, I(4) - Pi],
+        [Pp, I(4) - Pp],
+        [Pl, I(4) - Pl]
     ]
     return projectors
 end

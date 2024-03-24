@@ -1,6 +1,6 @@
-abstract type AbstractQuantumModel{T} end 
+abstract type AbstractQuantumModel{T} end
 
-function make_projectors(model::AbstractQuantumModel) 
+function make_projectors(model::AbstractQuantumModel)
     error("A method for `make_projectors` is not defined for $(typeof(model))")
 end
 
@@ -28,11 +28,11 @@ all possible orders where as the function `get_joint_probs` returns joint probab
 `make_projectors`.
 """
 function predict(
-        model::AbstractQuantumModel; 
-        n_way, 
-        joint_func = get_ordered_joint_probs
-    )
-    (;Ψ) = model
+    model::AbstractQuantumModel;
+    n_way,
+    joint_func = get_ordered_joint_probs
+)
+    (; Ψ) = model
     # generate all projectors 
     projectors = make_projectors(model)
     # generate all combinations of projectors for 2-way tables 
@@ -77,7 +77,7 @@ function get_joint_probs(model::AbstractQuantumModel, projectors, Ψ)
     n = length(combs)
     joint_probs = fill(0.0, n)
     i = 1
-    for c ∈ combs  
+    for c ∈ combs
         joint_probs[i] = get_joint_prob(model, c, Ψ)
         i += 1
     end
@@ -100,9 +100,9 @@ function get_ordered_joint_probs(model::AbstractQuantumModel{T}, projectors, Ψ)
     combs = Base.product(projectors...)
     n = length(combs)
     n_perms = factorial(length(projectors))
-    joint_probs = [Vector{T}(undef,n) for _ ∈ 1:n_perms]
+    joint_probs = [Vector{T}(undef, n) for _ ∈ 1:n_perms]
     c = 1
-    for comb ∈ combs  
+    for comb ∈ combs
         order = 1
         for perm ∈ permutations(comb)
             joint_probs[order][c] = get_joint_prob(model, perm, Ψ)
@@ -126,7 +126,7 @@ Computes the joint probability of a sequence of events whose projectors are defi
 """
 function get_joint_prob(model::AbstractQuantumModel, projectors, Ψ)
     proj = prod(projectors) * Ψ
-    return proj' * proj 
+    return proj' * proj
 end
 
 const ⊗(x, y) = kron(x, y)
@@ -154,11 +154,11 @@ all possible orders where as the function `get_joint_probs` returns joint probab
 - `n_way`: the number of attributes simultaneously judged, forming an n_way-table. 
 """
 function rand(
-        dist::AbstractQuantumModel,
-        n_trials::Int;
-        joint_func = get_ordered_joint_probs,
-        n_way
-    )
+    dist::AbstractQuantumModel,
+    n_trials::Int;
+    joint_func = get_ordered_joint_probs,
+    n_way
+)
     preds = predict(dist; joint_func, n_way)
     return _rand(n_trials, preds)
 end
@@ -197,14 +197,13 @@ Evaluates the log likelihood of all judgements per condition for all possible or
 - `n_way`: the number of attributes simultaneously judged, forming an n_way-table. 
 """
 function logpdf(
-        dist::AbstractQuantumModel,
-        data::Vector{Vector{Vector{Int}}},
-        n_trials::Int;
-        n_way
-    )
-
+    dist::AbstractQuantumModel,
+    data::Vector{Vector{Vector{Int}}},
+    n_trials::Int;
+    n_way
+)
     preds = predict(
-        dist; 
+        dist;
         joint_func = get_ordered_joint_probs,
         n_way
     )
@@ -233,14 +232,13 @@ Evaluates the log likelihood of all judgements for all possible joint probabilit
 - `n_way`: the number of attributes simultaneously judged, forming an n_way-table. 
 """
 function logpdf(
-        dist::AbstractQuantumModel,
-        data::Vector{Vector{Int}},
-        n_trials::Int;
-        n_way
-    )
-
+    dist::AbstractQuantumModel,
+    data::Vector{Vector{Int}},
+    n_trials::Int;
+    n_way
+)
     preds = predict(
-        dist; 
+        dist;
         joint_func = get_joint_probs,
         n_way
     )
@@ -248,17 +246,17 @@ function logpdf(
 end
 
 function _logpdf(
-        n_trials, 
-        data::Vector{Vector{Vector{Int}}}, 
-        preds::Vector{Vector{Vector{T}}}
-    ) where {T}
-    return mapreduce((p,d) -> logpdf.(Multinomial.(n_trials, p), d), +, preds, data)
+    n_trials,
+    data::Vector{Vector{Vector{Int}}},
+    preds::Vector{Vector{Vector{T}}}
+) where {T}
+    return mapreduce((p, d) -> logpdf.(Multinomial.(n_trials, p), d), +, preds, data)
 end
 
 function _logpdf(
-        n_trials, 
-        data::Vector{Vector{Int}},
-        preds::Vector{Vector{T}}
-    ) where {T}
+    n_trials,
+    data::Vector{Vector{Int}},
+    preds::Vector{Vector{T}}
+) where {T}
     return sum(logpdf.(Multinomial.(n_trials, preds), data))
 end

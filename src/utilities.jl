@@ -1,18 +1,18 @@
 function Base.show(io::IO, ::MIME"text/plain", model::AbstractQuantumModel)
     values = [getfield(model, f) for f in fieldnames(typeof(model))]
-    values = map(x -> typeof(x) <: Vector ? round.(copy(x), digits=2) : x, values)
+    values = map(x -> typeof(x) <: Vector ? round.(copy(x), digits = 2) : x, values)
     T = typeof(model)
     model_name = string(T.name.name)
     return pretty_table(io,
         values;
-        title=model_name,
-        row_label_column_title="Parameter",
-        compact_printing=false,
-        header=["Value"],
-        row_label_alignment=:l,
-        row_labels=[fieldnames(typeof(model))...],
-        formatters=ft_printf("%5.2f"),
-        alignment=:l,
+        title = model_name,
+        row_label_column_title = "Parameter",
+        compact_printing = false,
+        header = ["Value"],
+        row_label_alignment = :l,
+        row_labels = [fieldnames(typeof(model))...],
+        formatters = ft_printf("%5.2f"),
+        alignment = :l
     )
 end
 
@@ -62,12 +62,11 @@ where `T1`,`T2` `<:` `Vector`.
 ```
 """
 function to_dataframe(
-        data::Vector{Vector{Vector{T}}},
-        attributes::T1,
-        values::T2,
-        n_way::Int
-    ) where {T,T1<:Vector,T2<:Vector}
-
+    data::Vector{Vector{Vector{T}}},
+    attributes::T1,
+    values::T2,
+    n_way::Int
+) where {T, T1 <: Vector, T2 <: Vector}
     dv_name = T == Int ? "data" : "preds"
     df = DataFrame(
         "group" => Int[],
@@ -75,26 +74,36 @@ function to_dataframe(
         "attributes" => T1[],
         "values" => T2(),
         "val_idx" => Int[],
-        dv_name => T[],
+        dv_name => T[]
     )
     var_combs = combinations(attributes, n_way)
     val_combs = combinations(values, n_way)
     vals_combs = map(c -> collect(Base.product(c...))[:], val_combs)
     cnt = 0
     group_idx = 0
-    for (vars,vals) ∈ zip(var_combs, vals_combs)
+    for (vars, vals) ∈ zip(var_combs, vals_combs)
         group_idx += 1
         val_idx = 0
         for vals1 ∈ vals
             val_idx += 1
             order_idx = 0
-            for (vi,_v) ∈ zip(permutations(vars), permutations(vals1))
+            for (vi, _v) ∈ zip(permutations(vars), permutations(vals1))
                 order_idx += 1
-                push!(df, (group_idx, order_idx, vi, _v, val_idx, data[group_idx][order_idx][val_idx]))
+                push!(
+                    df,
+                    (
+                        group_idx,
+                        order_idx,
+                        vi,
+                        _v,
+                        val_idx,
+                        data[group_idx][order_idx][val_idx]
+                    )
+                )
             end
         end
     end
-    sort!(df,[:group,:attributes])
+    sort!(df, [:group, :attributes])
     return df
 end
 
@@ -152,25 +161,24 @@ where `T1`,`T2` `<:` `Vector`.
 ```
 """
 function to_dataframe(
-        data::Vector{Vector{T}},
-        attributes::T1,
-        values::T2,
-        n_way::Int
-    ) where {T,T1<:Vector,T2<:Vector}
-
+    data::Vector{Vector{T}},
+    attributes::T1,
+    values::T2,
+    n_way::Int
+) where {T, T1 <: Vector, T2 <: Vector}
     dv_name = T == Int ? "data" : "preds"
     df = DataFrame(
         "group" => Int[],
         "attributes" => T1[],
         "values" => T2(),
-        dv_name => T[],
+        dv_name => T[]
     )
     var_combs = combinations(attributes, n_way)
     val_combs = combinations(values, n_way)
     vals_combs = map(c -> collect(Base.product(c...))[:], val_combs)
     cnt = 0
     group_idx = 0
-    for (vars,vals) ∈ zip(var_combs, vals_combs)
+    for (vars, vals) ∈ zip(var_combs, vals_combs)
         group_idx += 1
         val_idx = 0
         for v ∈ vals
@@ -178,8 +186,8 @@ function to_dataframe(
             push!(df, (group_idx, vars, [v...], data[group_idx][val_idx]))
         end
     end
-    sort!(df,[:group,:attributes])
-    return df 
+    sort!(df, [:group, :attributes])
+    return df
 end
 
 """
@@ -218,19 +226,18 @@ julia> df[1]
 ```
 """
 function to_tables(
-        data::Vector{Vector{Vector{T}}},
-        attributes::T1,
-        values::T2,
-        n_way::Int
-    ) where {T,T1,T2}
-
+    data::Vector{Vector{Vector{T}}},
+    attributes::T1,
+    values::T2,
+    n_way::Int
+) where {T, T1, T2}
     df_long = to_dataframe(data, attributes, values, n_way)
     dfs = Vector{Vector{DataFrame}}()
     df_groups = groupby(df_long, :group)
     for group ∈ df_groups
         df_inner = DataFrame[]
         df_orders = groupby(group, :order)
-        for order ∈ df_orders 
+        for order ∈ df_orders
             push!(df_inner, DataFrame(order))
         end
         push!(dfs, df_inner)
@@ -273,12 +280,11 @@ julia> df[1:2]
 ```
 """
 function to_tables(
-        data::Vector{Vector{T}},
-        attributes::T1,
-        values::T2,
-        n_way::Int
-    ) where {T,T1,T2}
-
+    data::Vector{Vector{T}},
+    attributes::T1,
+    values::T2,
+    n_way::Int
+) where {T, T1, T2}
     df_long = to_dataframe(data, attributes, values, n_way)
     dfs = DataFrame[]
     df_groups = groupby(df_long, :group)
