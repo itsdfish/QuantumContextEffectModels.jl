@@ -2,35 +2,35 @@
 #                                           load dependencies
 ###############################################################################################################
 cd(@__DIR__)
-using Pkg 
+using Pkg
 Pkg.activate("..")
 using Revise
 using Combinatorics
 using QuantumContextEffectModels
 using DataFrames
-using Distributions 
+using Distributions
 using LinearAlgebra
-using Plots 
+using Plots
 include("functions.jl")
 
-columns = [:A,:B,:C,:D]
-n = 100 
+columns = [:A, :B, :C, :D]
+n = 100
 
 Θ = rand(16)
 Θ ./= sum(Θ)
 
-contexts = [[:A,:B],[:A,:C],[:B,:C]]
+contexts = [[:A, :B], [:A, :C], [:B, :C]]
 
-x = map(_ -> let 
+x = map(_ -> let
         data = simulate(Θ, columns, contexts, n)
         Χ² = compute_chi_square(Θ, data, columns, contexts, n)
     end,
     1:10000)
 
-xs = range(0, 30, length=200)
+xs = range(0, 30, length = 200)
 dens = pdf.(Chisq(9), xs)
 
-histogram(x, norm=true)
+histogram(x, norm = true)
 plot!(xs, dens)
 
 using Optim
@@ -42,10 +42,10 @@ function objective(Θ, data, columns, contexts, n)
     return -compute_log_like(Θ, data, columns, contexts, n)
 end
 
-columns = [:A,:B,:C,:D]
-n = 1000 
+columns = [:A, :B, :C, :D]
+n = 1000
 contexts = combinations(columns, 2) |> collect
-Θ = range(.1, 1, length=16) |> collect
+Θ = range(0.1, 1, length = 16) |> collect
 Θ ./= sum(Θ)
 data = simulate(Θ, columns, contexts, n)
 
@@ -53,7 +53,7 @@ x0 = rand(7)
 f = wrapper(data, columns, contexts, n)
 @time result = optimize(
     x -> objective(x, data, columns, contexts, n), x0,
-    NelderMead(),
+    NelderMead()
     #ParticleSwarm(n_particles=10),
 )
 best = Optim.minimizer(result)
