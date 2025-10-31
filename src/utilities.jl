@@ -1,17 +1,18 @@
 function Base.show(io::IO, ::MIME"text/plain", model::AbstractQuantumModel)
     values = [getfield(model, f) for f in fieldnames(typeof(model))]
-    values = map(x -> typeof(x) <: Vector ? round.(copy(x), digits = 2) : x, values)
+    values = map(x -> typeof(x) == Bool ? string(x) : x, values)
     T = typeof(model)
     model_name = string(T.name.name)
-    return pretty_table(io,
+    return pretty_table(
+        io,
         values;
         title = model_name,
-        row_label_column_title = "Parameter",
+        column_labels = ["Value"],
+        stubhead_label = "Parameter",
         compact_printing = false,
-        header = ["Value"],
-        row_label_alignment = :l,
+        row_label_column_alignment = :l,
         row_labels = [fieldnames(typeof(model))...],
-        formatters = ft_printf("%5.2f"),
+        formatters = [fmt__printf("%5.2f", [2,])],
         alignment = :l
     )
 end
