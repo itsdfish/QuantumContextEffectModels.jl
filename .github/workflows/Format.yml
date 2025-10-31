@@ -4,19 +4,19 @@ on:
     - cron: '0 0 * * *'
   push:
     branches:
-      - 'main'
+      - 'master'
     tags: ['*']
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: julia-actions/setup-julia@v2
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v1
         with:
           version: '1'
           arch: x64
           show-versioninfo: true
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@v1
       - name: Install JuliaFormatter and format
         shell: julia --color=yes {0}
         run: |
@@ -29,7 +29,7 @@ jobs:
       # https://github.com/peter-evans/create-pull-request#reference-example
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Format .jl files
