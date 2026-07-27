@@ -22,9 +22,9 @@ n = 100
 contexts = [[:A, :B], [:A, :C], [:B, :C]]
 
 x = map(_ -> let
-        data = simulate(Θ, columns, contexts, n)
-        Χ² = compute_chi_square(Θ, data, columns, contexts, n)
-    end,
+    data = simulate(Θ, columns, contexts, n)
+    Χ² = compute_chi_square(Θ, data, columns, contexts, n)
+end,
     1:10000)
 
 xs = range(0, 30, length = 200)
